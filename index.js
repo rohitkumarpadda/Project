@@ -49,7 +49,6 @@ app.post("/SignUp", async (req, res) => {
   console.log("Sign Up route");
   try {
     const { Firstname, Lastname, Email, DOB, Password } = req.body;
-    console.log(Firstname, Lastname, Email, DOB, Password);
     // Validate request body
     if (!Firstname || !Lastname || !Email || !DOB || !Password) {
       return res.status(400).send("All fields are required");
@@ -72,10 +71,9 @@ app.post("/SignUp", async (req, res) => {
 
 app.post("/SignIn", async (req, res) => {
   console.log("Sign In route");
-  console.log(req.body);
   try {
     const { Email, Password } = req.body;
-    const user = await LoginData.findOne({ email: Email });
+    const user = await LoginData.findOne({ email: { $eq: Email } });
     if (user) {
       const bcrypt = require("bcrypt");
       const isMatch = await bcrypt.compare(Password, user.password);
