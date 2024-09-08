@@ -4,11 +4,20 @@ const path = require("path");
 const app = express();
 const mongoose = require("mongoose");
 const LoginData = require("./models/LoginData");
+const ratelimit = require("express-rate-limit");
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+const limiter = ratelimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again later.",
+});
+
+app.use(limiter);
 
 app.use(express.static(path.join(__dirname, "public")));
 
