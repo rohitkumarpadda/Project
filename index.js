@@ -48,10 +48,15 @@ function encryptpassword(password) {
 app.post("/SignUp", async (req, res) => {
   console.log("Sign Up route");
   try {
-    const { Firstname, Lastname, Email, DOB, Password } = req.body;
-    // Validate request body
-    if (!Firstname || !Lastname || !Email || !DOB || !Password) {
-      return res.status(400).send("All fields are required");
+    const { Firstname, Lastname, Email, DOB, Password, Verifypassword } =
+      req.body;
+    if (Password !== Verifypassword) {
+      return res.send(`
+          <script>
+            alert('Passwords do not match, please try again');
+            window.location.href = '/SignUp';
+          </script>
+        `);
     }
 
     const logindata = await LoginData.create({
@@ -64,8 +69,16 @@ app.post("/SignUp", async (req, res) => {
 
     res.redirect("/");
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Internal Server Error");
+    if (error.code === 11000) {
+      res.send(`
+          <script>
+            alert('User already exists,Use different email');
+            window.location.href = '/SignUp';
+          </script>
+        `);
+    } else {
+      res.status(500).send("Internal Server Error");
+    }
   }
 });
 
