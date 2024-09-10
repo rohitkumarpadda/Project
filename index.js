@@ -54,7 +54,8 @@ function encryptpassword(password) {
 app.post("/SignUp", async (req, res) => {
   console.log("Sign Up route");
   try {
-    const { Firstname, Lastname, Email, DOB, Password, Verifypassword } = req.body;
+    const { Firstname, Lastname, Email, DOB, Password, Verifypassword } =
+      req.body;
     if (Password !== Verifypassword) {
       return res.send(`
         <script>
@@ -121,7 +122,7 @@ app.post("/SignIn", async (req, res) => {
 app.post("/forgotpassword", async (req, res) => {
   const { Email } = req.body;
   try {
-    const user = await LoginData.findOne({ email: Email });
+    const user = await LoginData.findOne({ email: { $eq: Email } });
     if (!user) {
       return res.send(`
         <script>
@@ -134,11 +135,11 @@ app.post("/forgotpassword", async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     user.otp = otp;
-    user.otpExpiry = Date.now() + 3600000; 
+    user.otpExpiry = Date.now() + 3600000;
     await user.save();
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -169,7 +170,7 @@ app.post("/forgotpassword", async (req, res) => {
 app.post("/verify-otp", async (req, res) => {
   const { Email, OTP, NewPassword } = req.body;
   try {
-    const user = await LoginData.findOne({ email: Email });
+    const user = await LoginData.findOne({ email: { $eq: Email } });
     if (!user) {
       return res.send(`
         <script>
@@ -191,9 +192,9 @@ app.post("/verify-otp", async (req, res) => {
     const encryptedPassword = encryptpassword(NewPassword);
 
     user.password = encryptedPassword;
-    user.otp = null; 
+    user.otp = null;
     user.otpExpiry = null;
-    user.lastResetDate = new Date(); 
+    user.lastResetDate = new Date();
     await user.save();
 
     res.send(`
