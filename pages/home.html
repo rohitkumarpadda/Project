@@ -3,11 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HOME</title>
+    <title>Home Page-Ship It</title>
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
+  <h1 id="welcome-message"></h1>
+  <script>
+    fetch("/user")
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById(
+          "welcome-message"
+        ).textContent = `Hi, ${data.firstname}!`;
+      });
+  </script>
   <body>
-    <h1>WELCOME TO SHIPIT</h1>
-    <a href="/SignIn">Login</a>
-    <a href="/SignUp">Register</a>
+    <header>
+      <ul>
+        <div class="nav"><a href="/SignIn">Login</a></div>
+        <div class="nav"><a href="/SignUp">Sign Up</a></div>
+        <div class="nav"><a href="/about">About Us</a></div>
+        <div class="nav"><a href="/logout">Log Out</a></div>
+      </ul>
+    </header>
   </body>
 </html>
