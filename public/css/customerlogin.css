@@ -1,80 +1,103 @@
-body{
-   background-color: white;
+body {
+  background-color: white;
 }
-#formdiv{
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    position:relative;
-    top:18vh;
-}
-form{
-    background-color:white;
-    border:2px solid white;
-    border-radius:10px;
-      height:470px;
-      box-shadow: 5px 5px 5px 5px rgb(183, 182, 182);
-
-}
-#select{
-    margin-top:30px;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-}
-.selectuser{
-    margin:4px 0px;
-    width:30vh;
-    height:5vh;
-    font-weight:bold;
-    background-color: white;
-    border:1px solid rgb(218, 214, 214);
-    font-size:15px ;
-}
-p{
-    text-align: center;
-    font-size: 17px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-h2{
-    text-align:center;
-     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-input{
-    width:50vh;
-    height:4vh;
-    border:1px solid rgb(218, 214, 214);
-}
-label{
-    font-weight:700;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-#link{
+#formdiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-    left: 21.5vh;
+  top: 18vh;
 }
-.input{
-    font-size: 20px;
-    margin:5px 53px;
+form {
+  background-color: white;
+  border: 2px solid white;
+  border-radius: 10px;
+  height: 470px;
+  box-shadow: 5px 5px 5px 5px rgb(183, 182, 182);
+}
+#select {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.selectuser {
+  margin: 4px 0px;
+  width: 30vh;
+  height: 5vh;
+  font-weight: bold;
+  background-color: white;
+  border: 1px solid rgb(218, 214, 214);
+  font-size: 15px;
+}
+p {
+  text-align: center;
+  font-size: 17px;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+h2 {
+  text-align: center;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+input {
+  width: 50vh;
+  height: 4vh;
+  border: 1px solid rgb(218, 214, 214);
+}
+label {
+  font-weight: 700;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
 
+#link {
+  position: relative;
+  left: 21.5vh;
 }
-#loginbutton{
-    margin-top:25px;
-    width:50vh;
-    height:5.5vh;
-    border: 1px solid white;
-    color:white;
-    font-size:17.5px;
-    background-color: rgb(24, 120, 223);
-    border-radius:10px;
+.input {
+  font-size: 20px;
+  margin: 5px 53px;
 }
-#footer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#loginbutton {
+  margin-top: 25px;
+  width: 50vh;
+  height: 5.5vh;
+  border: 1px solid white;
+  color: white;
+  font-size: 17.5px;
+  background-color: rgb(24, 120, 223);
+  border-radius: 10px;
 }
-#loginbutton:hover{
-    border:4px solid black;
-    font-size:large;
+#footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#loginbutton:hover {
+  border: 4px solid black;
+  font-size: large;
+}
+.oauth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.oauth-btn {
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.google {
+  background-color: #db4437;
+}
+
+.facebook {
+  background-color: #4267b2;
 }
