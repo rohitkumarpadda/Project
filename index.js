@@ -6,6 +6,9 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const ratelimit = require("express-rate-limit");
 const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
 const app = express();
 const LoginData = require("./models/LoginData");
 
@@ -27,12 +30,65 @@ app.use(
 
 // Rate limiter
 const limiter = ratelimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 10 * 60 * 1000, // 10 minutes
   max: 100,
   message: "Too many requests from this IP, please try again later.",
 });
+app.use(limiter);
 
-// Helper functions
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport serialize/deserialize for session persistence
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
+
+// Google OAuth strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/auth/google/callback",
+      scope: ["openid", "profile", "email"], // Updated scopes
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await LoginData.findOne({ email: profile.emails[0].value });
+        if (!user) {
+          user = await LoginData.create({
+            firstname: profile.name.givenName,
+            lastname: profile.name.familyName,
+            email: profile.emails[0].value,
+            dob: profile.birthday || null, // Store DOB if available
+            password: await encryptPassword(profile.id), // Save profile ID as hashed password for simplicity
+          });
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
+
+// Google OAuth routes
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["openid", "profile", "email"] })
+); // Updated scopes
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/SignIn" }),
+  (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/");
+  }
+);
+
+
 
 // Password encryption
 async function encryptPassword(password) {
@@ -86,7 +142,6 @@ async function sendOtpEmail(email, otp) {
 }
 
 // Middleware
-app.use(limiter);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -94,6 +149,14 @@ app.use(express.json());
 // Routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/home.html"));
+});
+
+app.get("/user", (req, res) => {
+  if (req.session.user) {
+    res.send(req.session.user);
+  } else {
+    res.send({ firstname: "" });
+  }
 });
 
 app.get("/SignIn", (req, res) => {
@@ -110,10 +173,6 @@ app.get("/forgot-password", (req, res) => {
 
 app.get("/verify-otp", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/verify-password.html"));
-});
-
-app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/aboutus.html"));
 });
 
 // Sign Up route
