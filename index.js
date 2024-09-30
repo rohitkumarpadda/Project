@@ -73,7 +73,6 @@ passport.use(
   )
 );
 
-
 // Google OAuth routes
 app.get(
   "/auth/google",
@@ -87,8 +86,6 @@ app.get(
     res.redirect("/");
   }
 );
-
-
 
 // Password encryption
 async function encryptPassword(password) {
@@ -173,6 +170,10 @@ app.get("/forgot-password", (req, res) => {
 
 app.get("/verify-otp", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/verify-password.html"));
+});
+
+app.get("/about", (req, res) => {
+  res.sendFile(path.join(__dirname, "pages/about.html"));
 });
 
 // Sign Up route
