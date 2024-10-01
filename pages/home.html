@@ -1,29 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Page-Ship It</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <h1 id="welcome-message"></h1>
-  <script>
-    fetch("/user")
-      .then((response) => response.json())
-      .then((data) => {
-        document.getElementById(
-          "welcome-message"
-        ).textContent = `Hi, ${data.firstname}!`;
-      });
-  </script>
-  <body>
-    <header>
-      <ul>
-        <div class="nav"><a href="/SignIn">Login</a></div>
-        <div class="nav"><a href="/SignUp">Sign Up</a></div>
-        <div class="nav"><a href="/about">About Us</a></div>
-        <div class="nav"><a href="/logout">Log Out</a></div>
-      </ul>
-    </header>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="icon" type="image/x-icon" href="assets/ship2.svg">
+</head>
+<body>
+    <div class="header">
+        <img src="assets/ship2.svg" class="shipimg">
+        <div id="heading" class="start">ShipIt</div>
+        <div id="middle">
+        <div  class="start"><a href="" id="a1" class="starti">Home</a></div>
+        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
+        <div  class="start"><a href="/about" id="a3" class="starti">About Us</a></div> 
+        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
+        <div  class="start"></div>
+        </div>
+        <div id="right">
+        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
+        <button id="loginbtn">Log in</button>
+       <button id="btn">Sign up</button>
+        </div>
+     </div>
+     <div id="parent2">
+        <h1 id="parent2heading">Ship Smater,Not Harder</h1>
+        <p id="parent2para">ShipIt is the revolutionary platform that connects customers with shippers through an innovative bidding system. Save time and money on your shipments today!</p>
+        <div id="parent2btnbox">
+            <button class="parent2btn" id="parent2btn1">Get Started</button>
+            <button class="parent2btn" id="parent2btn2">Learn More</button>
+        </div>
+     </div>
+
+
+     <div id="formdiv"></div>
+      <form action="/SignIn" method="post">
+        <div id="select">
+            <button id="customer" class="selectuser" >Customer</button>
+          <button id="retailer" class="selectuser" >Retailer</button>
+        </div>
+        <h2 id="loginheading">Sign In</h2>
+        <p id="loginpara">Customer signin</p>
+        <div class="input">
+          <label for="box1">Email</label>
+          <br />
+          <input
+            type="email"
+            id="box1"
+            name="Email"
+            placeholder="  name@example.com"
+          />
+        </div>
+        <br />
+        <div class="input">
+          <label for="box2">Password</label>
+          <br />
+          <input type="password" id="box2" name="Password" />
+        </div>
+        <div class="input">
+            <a href="/forgot-password" id="link" style="font-size:15px">Forgot Password</a>
+          <button id="loginbutton">Sign In</button>
+        </div>
+        <div id="footer">
+          <p>Don't have an account?</p>
+          <a href="/SignUp">Sign up</a>
+        </div>
+      </form>
+    </div>
+     <div id="footer1"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+</body>
 </html>
