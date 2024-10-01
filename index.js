@@ -51,7 +51,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:5000/auth/google/callback",
-      scope: ["openid", "profile", "email"], // Updated scopes
+      scope: ["openid", "profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -61,8 +61,10 @@ passport.use(
             firstname: profile.name.givenName,
             lastname: profile.name.familyName,
             email: profile.emails[0].value,
-            dob: profile.birthday || null, // Store DOB if available
-            password: await encryptPassword(profile.id), // Save profile ID as hashed password for simplicity
+            dob: profile.birthday || null,
+            password: await encryptPassword(profile.id),
+            oauthProvider: "Google",
+            oauthId: profile.id,
           });
         }
         return done(null, user);
@@ -83,7 +85,7 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/SignIn" }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect("/");
+    res.redirect("/about");
   }
 );
 
@@ -199,7 +201,7 @@ app.post("/SignUp", async (req, res, next) => {
     });
 
     req.session.user = logindata;
-    res.redirect("/");
+    res.redirect("/about");
   } catch (error) {
     if (error.code === 11000) {
       sendAlert(res, "User already exists, use a different email", "/SignUp");
@@ -219,7 +221,7 @@ app.post("/SignIn", async (req, res, next) => {
       const isMatch = await bcrypt.compare(Password, user.password);
       if (isMatch) {
         req.session.user = user;
-        res.redirect("/");
+        res.redirect("/about");
       } else {
         sendAlert(res, "Invalid Credentials", "/SignIn");
       }
