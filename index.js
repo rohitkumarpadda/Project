@@ -159,7 +159,11 @@ app.get("/user", (req, res) => {
 });
 
 app.get("/SignIn", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/customerlogin.html"));
+  res.send(`
+    <script>
+      window.location.href = '/#formdiv';
+    </script>
+  `);
 });
 
 app.get("/SignUp", (req, res) => {
