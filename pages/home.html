@@ -12,62 +12,73 @@
         <img src="assets/ship2.svg" class="shipimg">
         <div id="heading" class="start">ShipIt</div>
         <div id="middle">
-        <div  class="start"><a href="" id="a1" class="starti">Home</a></div>
-        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
-        <div  class="start"><a href="/about" id="a3" class="starti">About Us</a></div> 
-        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
-        <div  class="start"></div>
+            <div class="start"><a href="/" id="a1" class="starti">Home</a></div>
+            <div class="start"><a href="#how" id="a2" class="starti">How It Works</a></div>
+            <div class="start"><a href="/about" id="a3" class="starti">About Us</a></div>
+            <div class="start"><a href="/contact" id="a4" class="starti">Contact</a></div>
         </div>
         <div id="right">
-        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
-        <button id="loginbtn">Log in</button>
-       <button id="btn">Sign up</button>
+            <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
+            <button id="loginbtn">Log in</button>
+            <button id="btn">Sign up</button>
         </div>
-     </div>
-     <div id="parent2">
-        <h1 id="parent2heading">Ship Smater,Not Harder</h1>
+    </div>
+    
+    <div id="parent2">
+        <h1 id="parent2heading">Ship Smarter, Not Harder</h1>
         <p id="parent2para">ShipIt is the revolutionary platform that connects customers with shippers through an innovative bidding system. Save time and money on your shipments today!</p>
         <div id="parent2btnbox">
             <button class="parent2btn" id="parent2btn1">Get Started</button>
             <button class="parent2btn" id="parent2btn2">Learn More</button>
         </div>
-     </div>
-
-
-     <div id="formdiv"></div>
-      <form action="/SignIn" method="post">
+    </div>
+    
+    <h2 id="joinheading">Join ShipIt Today</h2>
+    <form action="/SignIn" method="post">
         <div id="select">
-            <button id="customer" class="selectuser" >Customer</button>
-          <button id="retailer" class="selectuser" >Retailer</button>
+            <button id="customer" class="selectuser">Customer</button>
+            <button id="retailer" class="selectuser">Retailer</button>
         </div>
-        <h2 id="loginheading">Sign In</h2>
-        <p id="loginpara">Customer signin</p>
-        <div class="input">
-          <label for="box1">Email</label>
-          <br />
-          <input
-            type="email"
-            id="box1"
-            name="Email"
-            placeholder="  name@example.com"
-          />
+        <div id="logoheading">
+            <img id="formlogo" src="assets/user.svg">
+            <h2 id="loginheading">Sign In</h2>
         </div>
-        <br />
+        <p id="loginpara">Hi! Please sign in to your account</p>
         <div class="input">
-          <label for="box2">Password</label>
-          <br />
-          <input type="password" id="box2" name="Password" />
+            <label for="box1" id="labelbox1">Email</label>
+            <br>
+            <input type="email" id="box1" name="Email" placeholder="  name@example.com" required>
+        </div>
+        <br>
+        <div class="input">
+            <label for="box2" id="labelbox2">Password</label>
+            <br>
+            <input type="password" id="box2" name="Password" required>
         </div>
         <div class="input">
-            <a href="/forgot-password" id="link" style="font-size:15px">Forgot Password</a>
-          <button id="loginbutton">Sign In</button>
+            <a href="/forgot-password" id="link" style="font-size:15px">Forgot password?</a>
+            <button id="loginbutton" type="submit">Sign In</button>
         </div>
         <div id="footer">
-          <p>Don't have an account?</p>
-          <a href="/SignUp">Sign up</a>
+            <p id="dhaa">Don't have an account?</p>
+            <a href="/SignUp">Sign up</a>
         </div>
-      </form>
+        
+        <!-- Updated Google login button -->
+        <div id="googlelogin">
+            <a href="/auth/google">
+                <button type="button" id="googlebtn">
+                    <img src="assets/google logo.jpg" class="googlelogo">
+                    Log In With Your Google Account
+                </button>
+            </a>
+        </div>
+    </form>
+
+    <div id="footer1">
+        <p id="footerpara">&#169 ShipIt. All rights reserved</p>
     </div>
-     <div id="footer1"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+
+    <script src="js/home.js"></script>
 </body>
 </html>
