@@ -1,38 +1,39 @@
-require("dotenv").config();
-const express = require("express");
-const path = require("path");
-const nodemailer = require("nodemailer");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const ratelimit = require("express-rate-limit");
-const session = require("express-session");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const nodemailer = require('nodemailer');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const ratelimit = require('express-rate-limit');
+const session = require('express-session');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
-const LoginData = require("./models/LoginData");
+const LoginData = require('./models/LoginData');
+const ShipperData = require('./models/shipperData');
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
 });
 
 // Middleware: session handling
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 30 },
-  })
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: true,
+		cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 30 },
+	})
 );
 
 // Rate limiter
 const limiter = ratelimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 100,
-  message: "Too many requests from this IP, please try again later.",
+	windowMs: 10 * 60 * 1000, // 10 minutes
+	max: 100,
+	message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
 
@@ -46,63 +47,65 @@ passport.deserializeUser((obj, done) => done(null, obj));
 
 // Google OAuth strategy
 passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
-      scope: ["openid", "profile", "email"],
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await LoginData.findOne({ email: profile.emails[0].value });
-        if (!user) {
-          user = await LoginData.create({
-            firstname: profile.name.givenName,
-            lastname: profile.name.familyName,
-            email: profile.emails[0].value,
-            dob: profile.birthday || null,
-            password: await encryptPassword(profile.id),
-            oauthProvider: "Google",
-            oauthId: profile.id,
-          });
-        }
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
+	new GoogleStrategy(
+		{
+			clientID: process.env.GOOGLE_CLIENT_ID,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+			callbackURL: 'http://localhost:5000/auth/google/callback',
+			scope: ['openid', 'profile', 'email'],
+		},
+		async (accessToken, refreshToken, profile, done) => {
+			try {
+				let user = await LoginData.findOne({ email: profile.emails[0].value });
+				if (!user) {
+					user = await LoginData.create({
+						firstname: profile.name.givenName,
+						lastname: profile.name.familyName,
+						email: profile.emails[0].value,
+						dob: profile.birthday || null,
+						password: await encryptPassword(profile.id),
+						oauthProvider: 'Google',
+						oauthId: profile.id,
+						lastlogin: new Date(),
+						type: 'user',
+					});
+				}
+				return done(null, user);
+			} catch (error) {
+				return done(error);
+			}
+		}
+	)
 );
 
 // Google OAuth routes
 app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["openid", "profile", "email"] })
+	'/auth/google',
+	passport.authenticate('google', { scope: ['openid', 'profile', 'email'] })
 ); // Updated scopes
 app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/SignIn" }),
-  (req, res) => {
-    req.session.user = req.user;
-    res.redirect("/about");
-  }
+	'/auth/google/callback',
+	passport.authenticate('google', { failureRedirect: '/SignIn' }),
+	(req, res) => {
+		req.session.user = req.user;
+		res.redirect('/about');
+	}
 );
 
 // Password encryption
 async function encryptPassword(password) {
-  const saltRounds = 10;
-  return await bcrypt.hash(password, saltRounds);
+	const saltRounds = 10;
+	return await bcrypt.hash(password, saltRounds);
 }
 
 // Find user by email
 async function findUserByEmail(email) {
-  return await LoginData.findOne({ email: { $eq: email } });
+	return await LoginData.findOne({ email: { $eq: email } });
 }
 
 // Reusable alert with redirection
 function sendAlert(res, message, redirectUrl) {
-  res.send(`
+	res.send(`
     <script>
       alert('${message}');
       window.location.href = '${redirectUrl}';
@@ -112,196 +115,261 @@ function sendAlert(res, message, redirectUrl) {
 
 // Password matching validation
 function passwordsMatch(password, verifyPassword) {
-  return password === verifyPassword;
+	return password === verifyPassword;
 }
 
 // OTP validation
 function isOtpValid(user, otp) {
-  return user.otp === otp && Date.now() <= user.otpExpiry;
+	return user.otp === otp && Date.now() <= user.otpExpiry;
 }
 
 // Send OTP email
 async function sendOtpEmail(email, otp) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+	const transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASS,
+		},
+	});
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Your OTP for Password Reset",
-    text: `Your OTP for password reset is ${otp}. It is valid for 1 hour.\n\nIf you did not request this, please ignore this email.\n\nRegards,\nTeam ShipIt`,
-  };
+	const mailOptions = {
+		from: process.env.EMAIL_USER,
+		to: email,
+		subject: 'Your OTP for Password Reset',
+		text: `Your OTP for password reset is ${otp}. It is valid for 1 hour.\n\nIf you did not request this, please ignore this email.\n\nRegards,\nTeam ShipIt`,
+	};
 
-  await transporter.sendMail(mailOptions);
+	await transporter.sendMail(mailOptions);
+}
+
+// Middleware to check if user is logged in
+async function isLoggedInAsuser(req, res, next) {
+	if (req.session.user && req.session.user.type === 'user') {
+		next();
+	} else {
+		res.redirect('/SignIn');
+	}
+}
+
+// Middleware to check if shipper is logged in
+async function isLoggedInAsShipper(req, res, next) {
+	if (req.session.user && req.session.user.type === 'shipper') {
+		next();
+	} else {
+		res.redirect('/SignIn');
+	}
 }
 
 // Middleware
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/home.html"));
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/home.html'));
 });
 
-app.get("/user", (req, res) => {
-  if (req.session.user) {
-    res.send(req.session.user);
-  } else {
-    res.send({ firstname: "" });
-  }
+app.get('/user', (req, res) => {
+	if (req.session.user) {
+		res.send(req.session.user);
+	} else {
+		res.send({ firstname: '' });
+	}
 });
 
-app.get("/SignIn", (req, res) => {
-  res.send(`
+app.get('/SignIn', (req, res) => {
+	res.send(`
     <script>
       window.location.href = '/#formdiv';
     </script>
   `);
 });
 
-app.get("/SignUp", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/signup.html"));
+app.get('/SignUp', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/signup.html'));
 });
 
-app.get("/forgot-password", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/forgot-password.html"));
+app.get('/forgot-password', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/forgot-password.html'));
 });
 
-app.get("/verify-otp", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/verify-password.html"));
+app.get('/verify-otp', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/verify-password.html'));
 });
 
-app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages/about.html"));
+app.get('/about', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/about.html'));
+});
+
+app.get('/shipperRegistration', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/shipperregister.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/shipperdashbord.html'));
 });
 
 // Sign Up route
-app.post("/SignUp", async (req, res, next) => {
-  try {
-    const { Firstname, Lastname, Email, DOB, Password, Verifypassword } =
-      req.body;
+app.post('/SignUp', async (req, res, next) => {
+	try {
+		const { Firstname, Lastname, Email, DOB, Password, Verifypassword } =
+			req.body;
 
-    if (!passwordsMatch(Password, Verifypassword)) {
-      return sendAlert(
-        res,
-        "Passwords do not match, please try again",
-        "/SignUp"
-      );
-    }
+		if (!passwordsMatch(Password, Verifypassword)) {
+			return sendAlert(
+				res,
+				'Passwords do not match, please try again',
+				'/SignUp'
+			);
+		}
 
-    const logindata = await LoginData.create({
-      firstname: Firstname,
-      lastname: Lastname,
-      dob: DOB,
-      email: Email,
-      password: await encryptPassword(Password),
-    });
+		const logindata = await LoginData.create({
+			firstname: Firstname,
+			lastname: Lastname,
+			dob: DOB,
+			email: Email,
+			password: await encryptPassword(Password),
+			lastlogin: new Date(),
+			type: 'user',
+		});
 
-    req.session.user = logindata;
-    res.redirect("/about");
-  } catch (error) {
-    if (error.code === 11000) {
-      sendAlert(res, "User already exists, use a different email", "/SignUp");
-    } else {
-      next(error);
-    }
-  }
+		req.session.user = logindata;
+		res.redirect('/about');
+	} catch (error) {
+		if (error.code === 11000) {
+			sendAlert(res, 'User already exists, use a different email', '/SignUp');
+		} else {
+			next(error);
+		}
+	}
 });
 
 // Sign In route
-app.post("/SignIn", async (req, res, next) => {
-  try {
-    const { Email, Password } = req.body;
-    const user = await findUserByEmail(Email);
+app.post('/SignIn', async (req, res, next) => {
+	try {
+		const { Email, Password } = req.body;
+		const user = await findUserByEmail(Email);
 
-    if (user) {
-      const isMatch = await bcrypt.compare(Password, user.password);
-      if (isMatch) {
-        req.session.user = user;
-        res.redirect("/about");
-      } else {
-        sendAlert(res, "Invalid Credentials", "/SignIn");
-      }
-    } else {
-      sendAlert(res, "User not found", "/SignIn");
-    }
-  } catch (error) {
-    next(error);
-  }
+		if (user) {
+			const isMatch = await bcrypt.compare(Password, user.password);
+			if (isMatch) {
+				user.lastlogin = new Date();
+				req.session.user = user;
+				res.redirect('/about');
+			} else {
+				sendAlert(res, 'Invalid Credentials', '/SignIn');
+			}
+		} else {
+			sendAlert(res, 'User not found', '/SignIn');
+		}
+	} catch (error) {
+		next(error);
+	}
 });
 
 // Forgot Password route
-app.post("/forgotpassword", async (req, res, next) => {
-  try {
-    const { Email } = req.body;
-    const user = await findUserByEmail(Email);
+app.post('/forgotpassword', async (req, res, next) => {
+	try {
+		const { Email } = req.body;
+		const user = await findUserByEmail(Email);
 
-    if (!user) {
-      return sendAlert(res, "User not found", "/SignIn");
-    }
+		if (!user) {
+			return sendAlert(res, 'User not found', '/SignIn');
+		}
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otp = otp;
-    user.otpExpiry = Date.now() + 3600000; // 1 hour expiry
-    await user.save();
+		const otp = Math.floor(100000 + Math.random() * 900000).toString();
+		user.otp = otp;
+		user.otpExpiry = Date.now() + 3600000; // 1 hour expiry
+		await user.save();
 
-    await sendOtpEmail(Email, otp);
-    sendAlert(res, "OTP sent to your email", "/verify-otp");
-  } catch (error) {
-    next(error);
-  }
+		await sendOtpEmail(Email, otp);
+		sendAlert(res, 'OTP sent to your email', '/verify-otp');
+	} catch (error) {
+		next(error);
+	}
 });
 
 // Verify OTP and reset password route
-app.post("/verify-otp", async (req, res, next) => {
-  try {
-    const { Email, OTP, NewPassword } = req.body;
-    const user = await findUserByEmail(Email);
+app.post('/verify-otp', async (req, res, next) => {
+	try {
+		const { Email, OTP, NewPassword } = req.body;
+		const user = await findUserByEmail(Email);
 
-    if (!user) {
-      return sendAlert(res, "User not found", "/SignIn");
-    }
+		if (!user) {
+			return sendAlert(res, 'User not found', '/SignIn');
+		}
 
-    if (!isOtpValid(user, OTP)) {
-      return sendAlert(res, "Invalid or expired OTP", "/forgot-password");
-    }
+		if (!isOtpValid(user, OTP)) {
+			return sendAlert(res, 'Invalid or expired OTP', '/forgot-password');
+		}
 
-    user.password = await encryptPassword(NewPassword);
-    user.otp = null;
-    user.otpExpiry = null;
-    user.lastResetDate = new Date();
-    await user.save();
+		user.password = await encryptPassword(NewPassword);
+		user.otp = null;
+		user.otpExpiry = null;
+		user.lastResetDate = new Date();
+		await user.save();
 
-    sendAlert(res, "Password has been reset successfully", "/SignIn");
-  } catch (error) {
-    next(error);
-  }
+		sendAlert(res, 'Password has been reset successfully', '/SignIn');
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.post('/shipperRegistration', async (req, res) => {
+	console.log(req.body);
+	const {
+		Fullname,
+		Email,
+		PhoneNumber,
+		PersonalAddress,
+		CompanyAddress,
+		DrivingLicense,
+		VehicleRegistration,
+		Password,
+		VerifyPassword,
+	} = req.body;
+	if (!passwordsMatch(Password, VerifyPassword)) {
+		return sendAlert(
+			res,
+			'Passwords do not match, please try again',
+			'/shipperRegistration'
+		);
+	}
+	const shipperData = await ShipperData.create({
+		fullname: Fullname,
+		email: Email,
+		phoneNumber: PhoneNumber,
+		password: await encryptPassword(Password),
+		type: 'shipper',
+		drLicense: DrivingLicense,
+		vehicleRegistration: VehicleRegistration,
+		personalAddress: PersonalAddress,
+		companyAddress: CompanyAddress,
+		lastlogin: new Date(),
+	});
+	req.session.user = shipperData;
+	res.redirect('/dashboard');
 });
 
 // Logout route
-app.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).send("Internal Server Error");
-    }
-    res.redirect("/");
-  });
+app.get('/logout', (req, res) => {
+	req.session.destroy((err) => {
+		if (err) {
+			return res.status(500).send('Internal Server Error');
+		}
+		res.redirect('/');
+	});
 });
 
 // Centralized error handling
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something went wrong!");
+	console.error(err.stack);
+	res.status(500).send('Something went wrong!');
 });
 
 // Server initialization
 app.listen(process.env.PORT, () => {
-  console.log("Server is up and running on port " + process.env.PORT);
+	console.log('Server is up and running on port ' + process.env.PORT);
 });
