@@ -68,6 +68,7 @@ passport.use(
 						oauthId: profile.id,
 						lastlogin: new Date(),
 						type: 'user',
+						userId: await generateUserId(),
 					});
 				}
 				return done(null, user);
@@ -143,6 +144,11 @@ async function sendOtpEmail(email, otp) {
 	await transporter.sendMail(mailOptions);
 }
 
+//Generate UserId(of 10 characters)
+async function generateUserId() {
+	return Math.random().toString(36).substring(2, 12);
+}
+
 // Middleware to check if user is logged in
 async function isLoggedInAsuser(req, res, next) {
 	if (req.session.user && req.session.user.type === 'user') {
@@ -207,8 +213,12 @@ app.get('/shipperRegistration', (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/shipperregister.html'));
 });
 
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard', isLoggedInAsShipper, (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/shipperdashbord.html'));
+});
+
+app.get('/afterlogin', isLoggedInAsuser, (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/afterloginhome.html'));
 });
 
 // Sign Up route
@@ -233,10 +243,11 @@ app.post('/SignUp', async (req, res, next) => {
 			password: await encryptPassword(Password),
 			lastlogin: new Date(),
 			type: 'user',
+			userId: await generateUserId(),
 		});
 
 		req.session.user = logindata;
-		res.redirect('/about');
+		res.redirect('/afterlogin');
 	} catch (error) {
 		if (error.code === 11000) {
 			sendAlert(res, 'User already exists, use a different email', '/SignUp');
@@ -257,7 +268,7 @@ app.post('/SignIn', async (req, res, next) => {
 			if (isMatch) {
 				user.lastlogin = new Date();
 				req.session.user = user;
-				res.redirect('/about');
+				res.redirect('/afterlogin');
 			} else {
 				sendAlert(res, 'Invalid Credentials', '/SignIn');
 			}
@@ -318,7 +329,6 @@ app.post('/verify-otp', async (req, res, next) => {
 });
 
 app.post('/shipperRegistration', async (req, res) => {
-	console.log(req.body);
 	const {
 		Fullname,
 		Email,
@@ -348,6 +358,7 @@ app.post('/shipperRegistration', async (req, res) => {
 		personalAddress: PersonalAddress,
 		companyAddress: CompanyAddress,
 		lastlogin: new Date(),
+		userId: await generateUserId(),
 	});
 	req.session.user = shipperData;
 	res.redirect('/dashboard');
