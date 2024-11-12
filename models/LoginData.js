@@ -13,6 +13,7 @@ const loginDataSchema = new mongoose.Schema({
 	lastResetDate: { type: Date },
 	lastlogin: { type: Date },
 	type: { type: String, required: true },
+	userId: { type: String, required: true, unique: true },
 });
 
 const LoginData = mongoose.model('LoginData', loginDataSchema);

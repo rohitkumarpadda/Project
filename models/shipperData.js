@@ -18,6 +18,7 @@ const loginDataSchema = new mongoose.Schema(
 		vehicleRegistration: { type: String, required: true },
 		validationUpto: { type: Date },
 		vehicleType: { type: String },
+		userId: { type: String, required: true, unique: true },
 	},
 	{
 		collection: 'shipperData',
