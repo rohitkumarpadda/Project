@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME</title>
+    <link rel="stylesheet" href="css/afterloginhome.css">
+     <link rel="icon"  href="assets/ship.svg">
+</head>
+<body>
+     <div class="header">
+        <img src="assets/ship2.svg" class="shipimg">
+        <div id="heading" class="start">ShipIt</div>
+        <div id="middle">
+        <div  class="start"><a href="" id="a1" class="starti">Home</a></div>
+        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
+        <div  class="start"><a href="" id="a3" class="starti">About Us</a></div> 
+        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
+        <div  class="start"></div>
+        </div>
+        <div id="right">
+        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
+        <button id="newmodebtn"><img src="assets/user.svg" class="mode"></button>
+        </div>
+     </div>
+     <div id="profile">
+            <p class="profilepara"><a href="" class="profilelink">My Profile</a></p>
+            <p class="profilepara"><a href="" class="profilelink">Settings</a></p>
+            <div id="profilediv"><img src="assets/log-out.svg"><p class=profilepara><a href="/logout" class="profilelink">Log Out</a></p></div>
+        </div>
+     <div id="parent2">
+        <h1 id="parent2heading">Ship Smater,Not Harder</h1>
+        <p id="parent2para">ShipIt is the revolutionary platform that connects customers with shippers through an innovative bidding system. Save time and money on your shipments today!</p>
+        <div id="parent2btnbox">
+            <button class="parent2btn" id="parent2btn1" onclick="document.getElementById('section1').scrollIntoView()">Submit New Shipment</button>
+        </div>
+     </div>
+     <div id="parent3">
+        <h2 id="parent3mainheading">Your shipments</h2>
+        <div id="parent3btns">
+            <button class="parent3btn" id="parent31">Current Shipments</button>
+            <button class="parent3btn" id="parent32">Past Shipments</button>
+        </div>
+        <div id="parent3contents">
+            <div class="shippment">
+                <div class="headingimgp3">
+                     <img src="assets/package (1).svg">
+                <h3 class="shippmentheading">Shipment#1</h3>
+                </div>
+                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
+                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
+                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
+            </div>
+             <div class="shippment">
+                <div class="headingimgp3">
+                     <img src="assets/package (1).svg">
+                <h3 class="shippmentheading">Shipment#1</h3>
+                </div>
+                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
+                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
+                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
+            </div>
+             <div class="shippment">
+               <div class="headingimgp3">
+                     <img src="assets/package (1).svg">
+                <h3 class="shippmentheading">Shipment#1</h3>
+                </div>
+                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
+                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
+                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
+            </div>
+        </div>
+     </div>
+     <section id="section1">
+        <form id="form">
+            <h2 id="formheading">Submit Your Shipment</h2>
+            <div class="set">
+                <div class="formele">
+                     <label for="length">Length</label>
+                <br>
+                <input type="text" name="length" placeholder="Enter Length (in cm)" id="length">
+                </div>
+                 <div class="formele">
+                <label for="width">Width</label>
+                <br>
+                 <input type="text" name="width" placeholder="Enter Width (in cm)" id="width">
+                 </div>
+            </div>
+            <div class="set">
+                 <div class="formele">
+                <label for="height">Height</label>
+                <br>
+                 <input type="text" name="height" placeholder="Enter height (in cm)" id="height">
+                 </div>
+                 <div class="formele">
+                 <label for="weight">Weight</label>
+                 <br>
+                 <input type="text" name="weight" placeholder="Enter weight (in kg)" id="weight">
+                 </div>
+            </div>
+            <input type="text" name="description" placeholder="Description" id="formdescription">
+            <label for="forming">Photos</label>
+            <input type="image" name="images" placeholder="Upload photos here" id="formimg"  src="assets/camera.svg">
+            <div id="caution">
+                <div class="cautionitems">
+                <img src="assets/circle-alert.svg">
+                <h3 id="cautionheading">Prohibited Items</h3>
+                </div>
+
+                <p id="cautionpara">For safety and legal reasons, the following items are strictly prohibited:</p>
+
+                <div id="cautionobj">
+                <div class="cautionitems">
+                    <img src="assets/bomb.svg">
+                  <p class="cautionpara"> Explosives</p> 
+                </div>
+                 <div class="cautionitems">
+                    <img src="assets/biohazard.svg">
+                   <p class="cautionpara">Radioactive materials</p> 
+                </div>
+                 <div class="cautionitems">
+                    <img src="assets/radiation.svg">
+                    <p class="cautionpara">Harzardous chemicals</p>
+                </div>
+                </div>
+            </div>
+            <button id="formsubmit">Submit Shipment</button>
+        </form>
+     </section>
+      <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+</body>
+<script src="js/afterloginhome.js"></script>
+</html>
