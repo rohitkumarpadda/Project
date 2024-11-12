@@ -1,7 +1,7 @@
 let state = 0; //initial customer
 let choice = document.querySelectorAll(".selectuser");
 choice.forEach((button) => {
-  //annielements vaccahi vachaka prathi element ki event add cheyali
+  
   button.addEventListener("click", () => {
     event.preventDefault(); //as these buttons are present inside a form we need to prevent it from submitting
     let option = button.getAttribute("id");
