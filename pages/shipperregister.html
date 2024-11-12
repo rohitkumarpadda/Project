@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipper Registration</title>
+    <link rel="stylesheet" href="css/shipperregister.css">
+    <link rel="icon" href="assets/ship.svg">
+</head>
+<body>
+    <div class="header">
+        <img src="assets/ship2.svg" class="shipimg">
+        <div id="heading" class="start">ShipIt</div>
+        <div id="middle">
+        <div  class="start"><a href="" id="a1" class="starti">Home</a></div>
+        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
+        <div  class="start"><a href="" id="a3" class="starti">About Us</a></div> 
+        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
+        <div  class="start"></div>
+        </div>
+        <div id="right">
+        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
+        </div>
+     </div>
+
+     <div id="form">
+        <form action="/shipperRegistration" method="post">
+            <h2 id="formheading">Register as a Shipper</h2>
+            <p id="formpara">Join ShipIt start bidding on shipments</p>
+           <label for="fullname">Fullname</label>
+           <input type="text" id="fullname" name="Fullname" required>
+           <br>
+           <label for="email">Email</label>
+           <input type="email" id="email" name="Email" required>
+           <br>
+           <label for="">Phone Number</label>
+           <input type="number" id="phonenumber" name="PhoneNumber" requied>
+           <br>
+           <label for="personaladdress">Personal Address</label>
+           <textarea class="address" name="PersonalAddress" requied></textarea>
+           <br>
+           <button type="button" id="check">I have a Company</button>
+           <label for="companyaddress" class="companyaddress">Company Address</label>
+           <textarea class="companyaddress" name="CompanyAddress" id="compadd" requied></textarea>
+           <br>
+           <label for="">Driving License</label>
+           <input type="text" id="Drivinglicense" name="DrivingLicense" requied>
+           <br>
+           <label for="vechileregis">Vechile Registration</label>
+           <input type="text" id="vechileregis" name="VehicleRegistration" requied>
+           <br>
+           <label for="password">Password</label>
+           <input type="password" class="password" name="Password" requied>
+           <br>
+           <label for="password">Confirm Password</label>
+           <input type="password" class="password" name="VerifyPassword" requied>
+           <br>
+           <div id="caution">
+            <div id="container">
+                <img src="assets/bomb.svg">
+                <h3>Important Notice</h3>
+                 </div>
+                <p id="cautionpara">
+                    By registering, you agree to comply with all applicable transportation laws and regulations. You are responsible for maintaining valid licenses, insurance, and vehicle registrations.
+                </p>
+           </div>
+           <button type="submit" id="submitbtn">Register As Shipper</button>
+        </form>
+     </div>
+      <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+</body>
+<script src="js/shipperregister.js"></script>
+</html>
