@@ -89,7 +89,7 @@ app.get(
 	passport.authenticate('google', { failureRedirect: '/SignIn' }),
 	(req, res) => {
 		req.session.user = req.user;
-		res.redirect('/about');
+		res.redirect('/afterlogin');
 	}
 );
 
