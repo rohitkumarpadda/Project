@@ -14,6 +14,7 @@ const loginDataSchema = new mongoose.Schema({
 	lastlogin: { type: Date },
 	type: { type: String, required: true },
 	userId: { type: String, required: true, unique: true },
+	address: { type: String },
 });
 
 const LoginData = mongoose.model('LoginData', loginDataSchema);
