@@ -8,10 +8,13 @@ const ratelimit = require('express-rate-limit');
 const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const https = require('https');
+const multer = require('multer');
 
 const app = express();
 const LoginData = require('./models/LoginData');
 const ShipperData = require('./models/shipperData');
+const orderData = require('./models/orderData');
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -69,6 +72,7 @@ passport.use(
 						lastlogin: new Date(),
 						type: 'user',
 						userId: await generateUserId(),
+						address: 'N/A',
 					});
 				}
 				return done(null, user);
@@ -83,7 +87,8 @@ passport.use(
 app.get(
 	'/auth/google',
 	passport.authenticate('google', { scope: ['openid', 'profile', 'email'] })
-); // Updated scopes
+);
+// Updated scopes
 app.get(
 	'/auth/google/callback',
 	passport.authenticate('google', { failureRedirect: '/SignIn' }),
@@ -148,6 +153,24 @@ async function sendOtpEmail(email, otp) {
 async function generateUserId() {
 	return Math.random().toString(36).substring(2, 12);
 }
+
+// Multer for image uploads
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, 'uploads/'); // Ensure this directory exists
+	},
+	filename: function (req, file, cb) {
+		// Get the userId from session
+		const userId = req.session.user.userId;
+		// Get the original file extension
+		const ext = path.extname(file.originalname);
+		// Generate a unique filename
+		const filename = `${userId}_${Date.now()}${ext}`;
+		cb(null, filename);
+	},
+});
+
+const upload = multer({ storage: storage });
 
 // Middleware to check if user is logged in
 async function isLoggedInAsuser(req, res, next) {
@@ -224,8 +247,15 @@ app.get('/afterlogin', isLoggedInAsuser, (req, res) => {
 // Sign Up route
 app.post('/SignUp', async (req, res, next) => {
 	try {
-		const { Firstname, Lastname, Email, DOB, Password, Verifypassword } =
-			req.body;
+		const {
+			Firstname,
+			Lastname,
+			Email,
+			DOB,
+			Password,
+			Verifypassword,
+			Address,
+		} = req.body;
 
 		if (!passwordsMatch(Password, Verifypassword)) {
 			return sendAlert(
@@ -244,6 +274,7 @@ app.post('/SignUp', async (req, res, next) => {
 			lastlogin: new Date(),
 			type: 'user',
 			userId: await generateUserId(),
+			address: Address ? Address : 'N/A',
 		});
 
 		req.session.user = logindata;
@@ -328,6 +359,166 @@ app.post('/verify-otp', async (req, res, next) => {
 	}
 });
 
+async function initiateDLVerification(idNumber, dateOfBirth) {
+	return new Promise((resolve, reject) => {
+		const options = {
+			method: 'POST',
+			hostname: 'eve.idfy.com',
+			path: '/v3/tasks/async/verify_with_source/ind_driving_license',
+			headers: {
+				'Content-Type': 'application/json',
+				'account-id': process.env.IDFY_ACCOUNT_ID,
+				'api-key': process.env.IDFY_API_KEY,
+			},
+			maxRedirects: 20,
+		};
+
+		const req = https.request(options, (res) => {
+			let chunks = [];
+			res.on('data', (chunk) => chunks.push(chunk));
+			res.on('end', () => {
+				const body = JSON.parse(Buffer.concat(chunks).toString());
+				resolve(body.request_id); // Obtain the request ID
+			});
+			res.on('error', (error) => reject(error));
+		});
+
+		const postData = JSON.stringify({
+			task_id: process.env.DRIVING_LICENSE_TASK_ID,
+			group_id: process.env.DRIVING_LICENSE_GROUP_ID,
+			data: {
+				id_number: idNumber,
+				date_of_birth: dateOfBirth,
+				advanced_details: {
+					state_info: true,
+					age_info: true,
+				},
+			},
+		});
+		console.log('Sending request with data:', postData);
+
+		req.write(postData);
+		req.end();
+	});
+}
+
+async function checkDLVerificationStatus(requestId) {
+	return new Promise((resolve, reject) => {
+		const interval = 2000; // Interval between checks in milliseconds
+		const timeout = 60000; // Maximum time to wait before timing out
+		let elapsedTime = 0;
+
+		const poll = () => {
+			const options = {
+				method: 'GET',
+				hostname: 'eve.idfy.com',
+				path: `/v3/tasks?request_id=${requestId}`,
+				headers: {
+					'api-key': process.env.IDFY_API_KEY,
+					'Content-Type': 'application/json',
+					'account-id': process.env.IDFY_ACCOUNT_ID,
+				},
+				maxRedirects: 20,
+			};
+
+			const req = https.request(options, (res) => {
+				let chunks = [];
+				res.on('data', (chunk) => chunks.push(chunk));
+				res.on('end', () => {
+					const responseString = Buffer.concat(chunks).toString();
+					console.log('Response:', responseString);
+
+					let body;
+					try {
+						body = JSON.parse(responseString);
+					} catch (error) {
+						console.error('Error parsing JSON:', error);
+						return reject(error);
+					}
+
+					// Access the first task in the response array
+					const task = body[0];
+					if (!task) {
+						console.error('No task found in response');
+						return reject(new Error('No task found in API response'));
+					}
+
+					console.log('Task details:', task);
+
+					// Check if the task has a "completed_at" field
+					if (task.completed_at) {
+						const sourceOutput = task.result?.source_output;
+						if (sourceOutput) {
+							// Process the sourceOutput data
+							// Check if validity dates are present
+							if (sourceOutput.nt_validity_from && sourceOutput.nt_validity_to) {
+								const validityFrom = new Date(sourceOutput.nt_validity_from);
+								const validityTo = new Date(sourceOutput.nt_validity_to);
+								const currentDate = new Date();
+
+								console.log('Validity From:', validityFrom);
+								console.log('Validity To:', validityTo);
+								console.log('Current Date:', currentDate);
+
+								// Check if current date is within validity period
+								if (currentDate >= validityFrom && currentDate <= validityTo) {
+									return resolve({
+										valid: true,
+										DL_Address: sourceOutput.address, // Save address as DL_Address
+										state: sourceOutput.state,
+									});
+								} else {
+									return resolve({ valid: false });
+								}
+							} else {
+								console.error('Validity dates not found in source_output');
+								return resolve({ valid: false });
+							}
+						} else {
+							console.error('No source_output found in task result');
+							return reject(new Error('No source_output in task result'));
+						}
+					} else if (task.status === 'failed') {
+						console.error('Verification task failed');
+						return reject(new Error('Verification task failed'));
+					} else if (task.status === 'in_progress') {
+						// Wait and poll again
+						if (elapsedTime < timeout) {
+							elapsedTime += interval;
+							console.log(
+								`Verification in progress... Retrying in ${
+									interval / 1000
+								} seconds.`
+							);
+							setTimeout(poll, interval);
+						} else {
+							console.error('Verification timed out');
+							return reject(new Error('Verification timed out'));
+						}
+					} else {
+						console.error(`Unknown task status: ${task.status}`);
+						return reject(new Error(`Unknown task status: ${task.status}`));
+					}
+				});
+				res.on('error', (error) => {
+					console.error('Request Error:', error);
+					reject(error);
+				});
+			});
+
+			req.on('error', (error) => {
+				console.error('Request Error:', error);
+				reject(error);
+			});
+
+			req.end();
+		};
+
+		// Start polling
+		poll();
+	});
+}
+
 app.post('/shipperRegistration', async (req, res) => {
 	const {
 		Fullname,
@@ -340,6 +531,8 @@ app.post('/shipperRegistration', async (req, res) => {
 		Password,
 		VerifyPassword,
 	} = req.body;
+	console.log(req.body);
+
 	if (!passwordsMatch(Password, VerifyPassword)) {
 		return sendAlert(
 			res,
@@ -347,22 +540,114 @@ app.post('/shipperRegistration', async (req, res) => {
 			'/shipperRegistration'
 		);
 	}
-	const shipperData = await ShipperData.create({
-		fullname: Fullname,
-		email: Email,
-		phoneNumber: PhoneNumber,
-		password: await encryptPassword(Password),
-		type: 'shipper',
-		drLicense: DrivingLicense,
-		vehicleRegistration: VehicleRegistration,
-		personalAddress: PersonalAddress,
-		companyAddress: CompanyAddress,
-		lastlogin: new Date(),
-		userId: await generateUserId(),
-	});
-	req.session.user = shipperData;
-	res.redirect('/dashboard');
+
+	try {
+		const requestId = await initiateDLVerification(
+			DrivingLicense,
+			'2005-12-28'
+		);
+		console.log('Request ID:', requestId);
+		const verificationResult = await checkDLVerificationStatus(requestId);
+
+		if (!verificationResult.valid) {
+			return sendAlert(
+				res,
+				'Driving License is not valid for transport use',
+				'/shipperRegistration'
+			);
+		}
+
+		// Save shipper data if DL is valid and transport validity exists
+		const shipperData = await ShipperData.create({
+			fullname: Fullname,
+			email: Email,
+			phoneNumber: PhoneNumber,
+			password: await encryptPassword(Password),
+			type: 'shipper',
+			drLicense: DrivingLicense,
+			vehicleRegistration: VehicleRegistration,
+			personalAddress: PersonalAddress,
+			companyAddress: CompanyAddress,
+			lastlogin: new Date(),
+			userId: await generateUserId(),
+			DL_Address: verificationResult.DL_Address,
+			state: verificationResult.state,
+		});
+
+		req.session.user = shipperData;
+		res.redirect('/dashboard');
+	} catch (error) {
+		console.error(error);
+		sendAlert(
+			res,
+			'An error occurred during registration',
+			'/shipperRegistration'
+		);
+	}
 });
+
+app.post(
+	'/submit-shipment',
+	isLoggedInAsuser,
+	upload.array('Images'),
+	async (req, res, next) => {
+		try {
+			const {
+				Length,
+				Width,
+				Height,
+				Weight,
+				HouseNumber,
+				Colony,
+				PinCode,
+				City,
+				State,
+				HousenumberTo,
+				ColonyTo,
+				PinCodeTo,
+				CityTo,
+				StateTo,
+				Description,
+			} = req.body;
+
+			// Process uploaded images
+			const imagePaths = req.files.map((file) => file.path);
+
+			// Create a new shipment order
+			const newOrder = await orderData.create({
+				userId: req.session.user.userId,
+				dimensions: {
+					length: parseFloat(Length),
+					width: parseFloat(Width),
+					height: parseFloat(Height),
+					weight: parseFloat(Weight),
+				},
+				fromAddress: {
+					houseNumber: HouseNumber,
+					colony: Colony,
+					pinCode: PinCode,
+					city: City,
+					state: State,
+				},
+				toAddress: {
+					houseNumber: HousenumberTo,
+					colony: ColonyTo,
+					pinCode: PinCodeTo,
+					city: CityTo,
+					state: StateTo,
+				},
+				description: Description,
+				images: imagePaths,
+				status: 'Pending',
+			});
+
+			res.redirect('/afterlogin');
+		} catch (error) {
+			console.error('Error submitting shipment:', error);
+			next(error);
+		}
+	}
+);
 
 // Logout route
 app.get('/logout', (req, res) => {
