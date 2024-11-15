@@ -19,15 +19,13 @@
         <div  class="start"></div>
         </div>
         <div id="right">
-        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
-        <button id="newmodebtn"><img src="assets/user.svg" class="mode"></button>
+        <button id="modebtn"><img src="assets/moon.svg" class="mode" id="modebtn1"></button>
+        <button id="newmodebtn"><img src="assets/user.svg" class="mode" id="imgprofile"></button>
+        <a href="home.html"><img src="assets/log-out.svg" class="mode"></a>
+        <!-- log out route ivu -->
         </div>
      </div>
-     <div id="profile">
-            <p class="profilepara"><a href="" class="profilelink">My Profile</a></p>
-            <p class="profilepara"><a href="" class="profilelink">Settings</a></p>
-            <div id="profilediv"><img src="assets/log-out.svg"><p class=profilepara><a href="/logout" class="profilelink">Log Out</a></p></div>
-        </div>
+        <!-- i need to render the div here -->
      <div id="parent2">
         <h1 id="parent2heading">Ship Smater,Not Harder</h1>
         <p id="parent2para">ShipIt is the revolutionary platform that connects customers with shippers through an innovative bidding system. Save time and money on your shipments today!</p>
@@ -72,35 +70,105 @@
         </div>
      </div>
      <section id="section1">
-        <form id="form">
+        <form id="form" action="/submit-shipment" method="post" enctype="multipart/form-data">
             <h2 id="formheading">Submit Your Shipment</h2>
             <div class="set">
                 <div class="formele">
                      <label for="length">Length</label>
                 <br>
-                <input type="text" name="length" placeholder="Enter Length (in cm)" id="length">
+                <input type="text" name="Length" placeholder="Enter Length (in cm)" id="length">
                 </div>
                  <div class="formele">
                 <label for="width">Width</label>
                 <br>
-                 <input type="text" name="width" placeholder="Enter Width (in cm)" id="width">
+                 <input type="text" name="Width" placeholder="Enter Width (in cm)" id="width">
                  </div>
             </div>
             <div class="set">
                  <div class="formele">
                 <label for="height">Height</label>
                 <br>
-                 <input type="text" name="height" placeholder="Enter height (in cm)" id="height">
+                 <input type="text" name="Height" placeholder="Enter height (in cm)" id="height">
                  </div>
                  <div class="formele">
                  <label for="weight">Weight</label>
                  <br>
-                 <input type="text" name="weight" placeholder="Enter weight (in kg)" id="weight">
+                 <input type="text" name="Weight" placeholder="Enter weight (in kg)" id="weight">
                  </div>
             </div>
-            <input type="text" name="description" placeholder="Description" id="formdescription">
+            <h2 class="addressheading">From Address</h2>
+            <div class="addressuser">
+                 <div class="set">
+                 <div class="formele">
+                 <label for="housenumber">House Number</label>
+                 <br>
+                 <input type="text" id="housenumber" name="HouseNumber" placeholder="H.NO" required>
+                 </div>
+                 <div class="formele">
+                    <label for="colony">Colony</label>
+                    <br>
+                 <input type="text" id="colony" name="Colony" placeholder="colony" required>
+                 </div>
+                 
+            </div>
+             <div class="set">
+                 <div class="formele">
+                  <label for="pincode">Pin-Code</label>
+                  <br>
+                  <input type="number" id="pincode" name="PinCode" placeholder="Pin-Code" required lenght="6">
+                 </div>
+                 <div class="formele">
+                    <label for="city">City</label>
+                    <br>
+                     <input type="text"  id="city" name="City" placeholder="City/District" required>
+                 </div>
+            </div>
+            <div class="set">
+                 <div class="formele">
+                    <label for="state">State</label>
+                    <br>
+                   <input type="text" id="state" name="State" placeholder="State" required>
+                 </div>
+            </div>
+            </div>
+            <h2 class="addressheading">To Address</h2>
+            <div class="addressuser">
+             <div class="set">
+                 <div class="formele">
+                 <label for="housenumber">House Number</label>
+                 <br>
+                 <input type="text" id="housenumberTo" name="HousenumberTo" placeholder="H.NO" required>
+                 </div>
+                 <div class="formele">
+                    <label for="colony">Colony</label>
+                    <br>
+                 <input type="text" id="colonyTo" name="ColonyTo" placeholder="colony" required>
+                 </div>
+                 
+            </div>
+             <div class="set">
+                 <div class="formele">
+                  <label for="pincode">Pin-Code</label>
+                  <br>
+                  <input type="number" id="pincodeTo" name="PinCodeTo" placeholder="Pin-Code" required lenght="6">
+                 </div>
+                 <div class="formele">
+                    <label for="city">City</label>
+                    <br>
+                     <input type="text"  id="cityTo" name="CityTo" placeholder="City/District" required>
+                 </div>
+            </div>
+            <div class="set">
+                 <div class="formele">
+                    <label for="state">State</label>
+                    <br>
+                   <input type="text" id="stateto" name="StateTo" placeholder="State" required>
+                 </div>
+            </div>
+            </div>
+            <input type="text" name="Description" placeholder="Description" id="formdescription">
             <label for="forming">Photos</label>
-            <input type="image" name="images" placeholder="Upload photos here" id="formimg"  src="assets/camera.svg">
+            <input type="image" name="Images" placeholder="Upload photos here" id="formimg"  src="assets/camera.svg">
             <div id="caution">
                 <div class="cautionitems">
                 <img src="assets/circle-alert.svg">
@@ -127,6 +195,39 @@
             <button id="formsubmit">Submit Shipment</button>
         </form>
      </section>
+     <div id="newdiv">
+         <div id="body">
+            <h2 id="bodyheading">Profile</h2>
+        <input type="image" id="profilephoto" name="Photo" placeholder="Upload img" src="assets/camera.svg">
+         <div class="boxflex">
+            <img src="assets/user (1).svg">
+            <div id="emailid" class="contents">UserName : User</div>
+        </div>
+        <div class="boxflex">
+            <img src="assets/mail.svg">
+            <div id="emailid" class="contents">Email Id : Email@gmail.com</div>
+        </div>
+        <div class="boxflex">
+            <img src="assets/calendar (1).svg">
+        <div id="dob" class="contents">Date of Birth : 11-11-1111</div>
+        </div>
+        <div class="boxflex">
+            <img src="assets/phone.svg">
+        <div id="phonenumber" class="contents">Phone Number : 9999999999</div>
+        </div>
+        <div class="boxflex">
+        <img src="assets/check.svg">
+        <div id="sussship" class="contents">Successful Shipments : 10</div>
+        </div> 
+        <div class="boxflex">
+        <img src="assets/map-pin.svg">
+        <div id="sussship" class="contents">Saved Addresses : ---</div>
+        </div> 
+        <div class="boxflex">
+        <div id="bio"></div>
+        </div>
+        </div>
+     </div>
       <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
 </body>
 <script src="js/afterloginhome.js"></script>

@@ -24,11 +24,16 @@ body{
       background-color: #f3f4f6;
       border-radius:50%;
 }
+a .mode{
+    background-color: white;
+    border-radius: 50%;
+    padding:0.6rem;
+}
 #modebtn{
     border-radius:50%;
     background-color: white;
     border:0.1px solid white;
-    margin-right:0.5rem;
+    margin-right:0rem;
 }
 #newmodebtn{
      border-radius:50%;
@@ -243,6 +248,10 @@ html{
 }
 .formele{
     margin:0rem 1.0rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 input{
     width:20vw;
@@ -251,6 +260,19 @@ input{
     border-radius:10px;
     border:0.2px solid grey;
 }
+.addressuser{
+    display: flex;
+    flex-direction: column;
+}
+label{
+     margin:-0.5rem 0rem;
+}
+.adducont{
+    display:flex;
+    justify-content:space-around;
+    width:44vw;
+    margin:0.5rem;
+}
 #formdescription{
      width:43vw;
     height:10vh;
@@ -258,6 +280,7 @@ input{
     border-radius:10px;
     border:0.2px solid grey;
     margin-top:2rem;
+    margin-bottom:1rem;
 }
 #formimg{
     border-radius:10px;
@@ -298,6 +321,39 @@ input{
 }
 #formsubmit:hover{
     border:4px solid black;
+}
+.boxflex{
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    margin:1.5rem;
+}
+#newdiv{
+    display: flex;
+    justify-content: flex-end;
+    position:absolute;
+    top:4rem;
+    right:3rem;
+    display:none;
+}
+#body{
+    background-color: white;
+    border-radius: 15px;
+    padding:1rem;
+    box-shadow: 0 0 10px 0 grey;
+}
+.boxflex img{
+   height:2rem;
+}
+.boxflex div{
+    font-size:1.1rem;
+    font-weight:500;
+    margin-left:1%;
+}
+#profilephoto{
+    border: 5px solid black;
+    height:5rem;
+    background-color: white;
 }
 #footer{
     background-color: rgb(4, 4, 49);
