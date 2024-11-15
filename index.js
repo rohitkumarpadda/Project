@@ -280,8 +280,8 @@ app.post('/SignUp', async (req, res, next) => {
 		req.session.user = logindata;
 		res.redirect('/afterlogin');
 	} catch (error) {
-		if (error.code === 11000) {
-			sendAlert(res, 'User already exists, use a different email', '/SignUp');
+		if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+			sendAlert(res, 'User with this Email already exists', '/SignUp');
 		} else {
 			next(error);
 		}
@@ -714,14 +714,21 @@ app.post('/shipperRegistration', async (req, res) => {
 				'Vehicle registration number is invalid. Please enter a valid RC number.',
 				'/shipperRegistration'
 			);
-		} else {
-			console.error(error);
-			sendAlert(
+		}
+		if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+			return sendAlert(
 				res,
-				'An error occurred during registration. Please try again later.',
+				'User with this email already exists. Please use a different email.',
 				'/shipperRegistration'
 			);
 		}
+
+		console.error(error);
+		sendAlert(
+			res,
+			'An error occurred during registration. Please try again later.',
+			'/shipperRegistration'
+		);
 	}
 });
 
