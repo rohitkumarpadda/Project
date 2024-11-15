@@ -395,7 +395,6 @@ async function initiateDLVerification(idNumber, dateOfBirth) {
 				},
 			},
 		});
-		
 
 		req.write(postData);
 		req.end();
@@ -404,7 +403,7 @@ async function initiateDLVerification(idNumber, dateOfBirth) {
 
 async function checkDLVerificationStatus(requestId) {
 	return new Promise((resolve, reject) => {
-		const interval = 2000; // Interval between checks in milliseconds
+		const interval = 5000; // Interval between checks in milliseconds
 		const timeout = 60000; // Maximum time to wait before timing out
 		let elapsedTime = 0;
 
@@ -426,7 +425,6 @@ async function checkDLVerificationStatus(requestId) {
 				res.on('data', (chunk) => chunks.push(chunk));
 				res.on('end', () => {
 					const responseString = Buffer.concat(chunks).toString();
-					
 
 					let body;
 					try {
@@ -443,20 +441,19 @@ async function checkDLVerificationStatus(requestId) {
 						return reject(new Error('No task found in API response'));
 					}
 
-					
-
 					// Check if the task has a "completed_at" field
 					if (task.completed_at) {
 						const sourceOutput = task.result?.source_output;
 						if (sourceOutput) {
 							// Process the sourceOutput data
 							// Check if validity dates are present
-							if (sourceOutput.nt_validity_from && sourceOutput.nt_validity_to) {
+							if (
+								sourceOutput.nt_validity_from &&
+								sourceOutput.nt_validity_to
+							) {
 								const validityFrom = new Date(sourceOutput.nt_validity_from);
 								const validityTo = new Date(sourceOutput.nt_validity_to);
 								const currentDate = new Date();
-
-								
 
 								// Check if current date is within validity period
 								if (currentDate >= validityFrom && currentDate <= validityTo) {
@@ -517,6 +514,119 @@ async function checkDLVerificationStatus(requestId) {
 	});
 }
 
+async function initiateVehicleVerification(rcNumber) {
+	return new Promise((resolve, reject) => {
+		const options = {
+			method: 'POST',
+			hostname: 'eve.idfy.com',
+			path: '/v3/tasks/async/verify_with_source/ind_rc_basic',
+			headers: {
+				'Content-Type': 'application/json',
+				'account-id': process.env.IDFY_ACCOUNT_ID,
+				'api-key': process.env.IDFY_API_KEY,
+			},
+			maxRedirects: 20,
+		};
+
+		const req = https.request(options, (res) => {
+			let chunks = [];
+			res.on('data', (chunk) => chunks.push(chunk));
+			res.on('end', () => {
+				const body = JSON.parse(Buffer.concat(chunks).toString());
+				resolve(body.request_id);
+			});
+			res.on('error', (error) => reject(error));
+		});
+
+		const postData = JSON.stringify({
+			task_id: process.env.VEHICLE_TASK_ID,
+			group_id: process.env.VEHICLE_GROUP_ID,
+			data: {
+				rc_number: rcNumber,
+			},
+		});
+
+		req.write(postData);
+		req.end();
+	});
+}
+
+async function checkVehicleVerificationStatus(requestId) {
+	return new Promise((resolve, reject) => {
+		const interval = 5000; // Interval between checks in milliseconds
+		const timeout = 60000; // Maximum time to wait before timing out
+		let elapsedTime = 0;
+
+		const poll = () => {
+			const options = {
+				method: 'GET',
+				hostname: 'eve.idfy.com',
+				path: `/v3/tasks?request_id=${requestId}`,
+				headers: {
+					'api-key': process.env.IDFY_API_KEY,
+					'Content-Type': 'application/json',
+					'account-id': process.env.IDFY_ACCOUNT_ID,
+				},
+				maxRedirects: 20,
+			};
+
+			const req = https.request(options, (res) => {
+				let chunks = [];
+				res.on('data', (chunk) => chunks.push(chunk));
+				res.on('end', () => {
+					const responseString = Buffer.concat(chunks).toString();
+					let body;
+
+					try {
+						body = JSON.parse(responseString);
+					} catch (error) {
+						return reject(error);
+					}
+
+					const task = body[0];
+					if (!task) {
+						return reject(new Error('No task found in API response'));
+					}
+
+					if (task.completed_at) {
+						const extractionOutput = task.result?.extraction_output;
+						if (extractionOutput) {
+							if (new Date(extractionOutput.fitness_upto) > new Date()) {
+								return resolve({
+									valid: true,
+									vehicleClass: extractionOutput.vehicle_class,
+									registrationNumber: extractionOutput.registration_number,
+								});
+							} else {
+								return resolve({ valid: false });
+							}
+						} else {
+							return reject(new Error('No extraction_output in task result'));
+						}
+					} else if (task.status === 'failed') {
+						return reject(new Error('Verification task failed'));
+					} else if (task.status === 'in_progress') {
+						if (elapsedTime < timeout) {
+							elapsedTime += interval;
+							setTimeout(poll, interval);
+						} else {
+							return reject(new Error('Verification timed out'));
+						}
+					} else {
+						return reject(new Error(`Unknown task status: ${task.status}`));
+					}
+				});
+				res.on('error', (error) => reject(error));
+			});
+
+			req.on('error', (error) => reject(error));
+			req.end();
+		};
+
+		poll();
+	});
+}
+
 app.post('/shipperRegistration', async (req, res) => {
 	const {
 		Fullname,
@@ -529,7 +639,6 @@ app.post('/shipperRegistration', async (req, res) => {
 		Password,
 		VerifyPassword,
 	} = req.body;
-	
 
 	if (!passwordsMatch(Password, VerifyPassword)) {
 		return sendAlert(
@@ -540,22 +649,45 @@ app.post('/shipperRegistration', async (req, res) => {
 	}
 
 	try {
-		const requestId = await initiateDLVerification(
+		// Initiate Driving License Verification
+		const dlRequestId = await initiateDLVerification(
 			DrivingLicense,
 			'2005-12-28'
 		);
-	
-		const verificationResult = await checkDLVerificationStatus(requestId);
+		const dlVerificationResult = await checkDLVerificationStatus(dlRequestId);
 
-		if (!verificationResult.valid) {
+		if (!dlVerificationResult.valid) {
 			return sendAlert(
 				res,
 				'Driving License is not valid for transport use',
 				'/shipperRegistration'
 			);
 		}
+		if (dlVerificationResult.valid) {
+			console.log('Driving License Verification Successfull');
+		}
 
-		// Save shipper data if DL is valid and transport validity exists
+		//Initiate Vehicle Registration Verification
+		const vehicleRequestId = await initiateVehicleVerification(
+			VehicleRegistration
+		);
+		const vehicleVerificationResult = await checkVehicleVerificationStatus(
+			vehicleRequestId
+		);
+
+		// Handle failed vehicle registration validation
+		if (!vehicleVerificationResult.valid) {
+			return sendAlert(
+				res,
+				'Vehicle registration number is invalid or fitness has expired. Please check and try again.',
+				'/shipperRegistration'
+			);
+		}
+		if (!vehicleVerificationResult.valid) {
+			console.log('Vehicle Registration Verification Successfull');
+		}
+
+		// Save shipper data if both validations are successful
 		const shipperData = await ShipperData.create({
 			fullname: Fullname,
 			email: Email,
@@ -568,19 +700,28 @@ app.post('/shipperRegistration', async (req, res) => {
 			companyAddress: CompanyAddress,
 			lastlogin: new Date(),
 			userId: await generateUserId(),
-			DL_Address: verificationResult.DL_Address,
-			state: verificationResult.state,
+			DL_Address: dlVerificationResult.DL_Address,
+			state: dlVerificationResult.state,
+			vehicleClass: vehicleVerificationResult.vehicleClass,
 		});
 
 		req.session.user = shipperData;
 		res.redirect('/dashboard');
 	} catch (error) {
-		console.error(error);
-		sendAlert(
-			res,
-			'An error occurred during registration',
-			'/shipperRegistration'
-		);
+		if (error.message && error.message.includes('BAD_REQUEST')) {
+			sendAlert(
+				res,
+				'Vehicle registration number is invalid. Please enter a valid RC number.',
+				'/shipperRegistration'
+			);
+		} else {
+			console.error(error);
+			sendAlert(
+				res,
+				'An error occurred during registration. Please try again later.',
+				'/shipperRegistration'
+			);
+		}
 	}
 });
 

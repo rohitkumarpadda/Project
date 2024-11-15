@@ -17,9 +17,9 @@ const loginDataSchema = new mongoose.Schema(
 		type: { type: String, required: true },
 		drLicense: { type: String, required: true },
 		vehicleRegistration: { type: String, required: true },
-		DL_Address: { type: String, required: true },
+		DL_Address: { type: String },
 		state: { type: String },
-		vehicleType: { type: String },
+		vehicleClass: { type: String },
 		userId: { type: String, required: true, unique: true },
 	},
 	{
