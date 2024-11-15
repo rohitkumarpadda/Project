@@ -395,7 +395,7 @@ async function initiateDLVerification(idNumber, dateOfBirth) {
 				},
 			},
 		});
-		console.log('Sending request with data:', postData);
+		
 
 		req.write(postData);
 		req.end();
@@ -426,7 +426,7 @@ async function checkDLVerificationStatus(requestId) {
 				res.on('data', (chunk) => chunks.push(chunk));
 				res.on('end', () => {
 					const responseString = Buffer.concat(chunks).toString();
-					console.log('Response:', responseString);
+					
 
 					let body;
 					try {
@@ -443,7 +443,7 @@ async function checkDLVerificationStatus(requestId) {
 						return reject(new Error('No task found in API response'));
 					}
 
-					console.log('Task details:', task);
+					
 
 					// Check if the task has a "completed_at" field
 					if (task.completed_at) {
@@ -456,9 +456,7 @@ async function checkDLVerificationStatus(requestId) {
 								const validityTo = new Date(sourceOutput.nt_validity_to);
 								const currentDate = new Date();
 
-								console.log('Validity From:', validityFrom);
-								console.log('Validity To:', validityTo);
-								console.log('Current Date:', currentDate);
+								
 
 								// Check if current date is within validity period
 								if (currentDate >= validityFrom && currentDate <= validityTo) {
@@ -531,7 +529,7 @@ app.post('/shipperRegistration', async (req, res) => {
 		Password,
 		VerifyPassword,
 	} = req.body;
-	console.log(req.body);
+	
 
 	if (!passwordsMatch(Password, VerifyPassword)) {
 		return sendAlert(
@@ -546,7 +544,7 @@ app.post('/shipperRegistration', async (req, res) => {
 			DrivingLicense,
 			'2005-12-28'
 		);
-		console.log('Request ID:', requestId);
+	
 		const verificationResult = await checkDLVerificationStatus(requestId);
 
 		if (!verificationResult.valid) {
