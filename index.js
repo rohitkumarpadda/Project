@@ -10,6 +10,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const https = require('https');
 const multer = require('multer');
+const crypto = require('crypto');
 
 const app = express();
 const LoginData = require('./models/LoginData');
@@ -71,7 +72,7 @@ passport.use(
 						oauthId: profile.id,
 						lastlogin: new Date(),
 						type: 'user',
-						userId: await generateUserId(),
+						userId: await generateID(),
 						address: 'N/A',
 					});
 				}
@@ -150,8 +151,8 @@ async function sendOtpEmail(email, otp) {
 }
 
 //Generate UserId(of 10 characters)
-async function generateUserId() {
-	return Math.random().toString(36).substring(2, 12);
+async function generateID() {
+	return crypto.randomBytes(5).toString('hex');
 }
 
 // Multer for image uploads
@@ -273,7 +274,7 @@ app.post('/SignUp', async (req, res, next) => {
 			password: await encryptPassword(Password),
 			lastlogin: new Date(),
 			type: 'user',
-			userId: await generateUserId(),
+			userId: await generateID(),
 			address: Address ? Address : 'N/A',
 		});
 
@@ -699,7 +700,7 @@ app.post('/shipperRegistration', async (req, res) => {
 			personalAddress: PersonalAddress,
 			companyAddress: CompanyAddress,
 			lastlogin: new Date(),
-			userId: await generateUserId(),
+			userId: await generateID(),
 			DL_Address: dlVerificationResult.DL_Address,
 			state: dlVerificationResult.state,
 			vehicleClass: vehicleVerificationResult.vehicleClass,
