@@ -40,33 +40,36 @@
             <button class="parent3btn" id="parent32">Past Shipments</button>
         </div>
         <div id="parent3contents">
-            <div class="shippment">
-                <div class="headingimgp3">
-                     <img src="assets/package (1).svg">
-                <h3 class="shippmentheading">Shipment#1</h3>
-                </div>
-                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
-                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
-                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
-            </div>
-             <div class="shippment">
-                <div class="headingimgp3">
-                     <img src="assets/package (1).svg">
-                <h3 class="shippmentheading">Shipment#1</h3>
-                </div>
-                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
-                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
-                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
-            </div>
-             <div class="shippment">
-               <div class="headingimgp3">
-                     <img src="assets/package (1).svg">
-                <h3 class="shippmentheading">Shipment#1</h3>
-                </div>
-                <p class="shippmentdicrip">Bids&nbsp;:&nbsp;5</p>
-                <p class="shippmentdicrip">Status&nbsp;:&nbsp;OnGoing</p>
-                <p class="shippmentdicrip">Time Left&nbsp;:&nbsp;2 days</p>
-            </div>
+           <!-- fetch elements-->
+           <script>
+            const parent3contents=document.getElementById('parent3contents');
+            document.addEventListener('DOMContentLoaded',()=>{
+                fetch("/showOrders").then((response)=>response.json()).then((data)=>{
+                    console.log(data);
+                    if(data.length===0){
+                        parent3contents.innerHTML="<h2>No Orders</h2>";
+                    }else{
+                    displayOrders(data); 
+                }
+                });
+        
+                function displayOrders(data){
+                    data.forEach((order,index)=>{
+                        const div=document.createElement('div');
+                        div.classList.add('shippment');
+                        div.innerHTML=`
+                        <div class="headingimgp3">
+                            <img src="assets/package (1).svg">
+                            <h3 class="shippmentheading">Shipment#${index+1}</h3>
+                            </div>
+                            <p class="shippmentdicrip">Bids:${order.Bids.length}</p>
+                            <p class="shippmentdicrip">Status:${order.status}</p>
+                            <p class="shippmentdicrip">Time Left:2 days</p>`
+                        parent3contents.appendChild(div);
+                    }); 
+                }
+            });
+        </script>
         </div>
      </div>
      <section id="section1">
