@@ -1,30 +1,26 @@
+let color1 = "black";
+let color2 = "white";
 let state = 0; //initial customer
 let choice = document.querySelectorAll(".selectuser");
+// let colorchange = (color1, color2) => {
+//   console.log("hi");
 choice.forEach((button) => {
-  
+  //annielements vaccahi vachaka prathi element ki event add cheyali
   button.addEventListener("click", () => {
     event.preventDefault(); //as these buttons are present inside a form we need to prevent it from submitting
     let option = button.getAttribute("id");
     if (option == "customer" && state == 1) {
       state = 0;
-      let dis = document.querySelector("#loginpara");
-      let log = document.querySelector("#formlogo");
-      dis.innerText = "Hi! there please Sign In to your account";
-      log.src = "assets/user.svg";
-      choice[0].style.backgroundColor = "black";
-      choice[0].style.color = "white";
-      choice[1].style.backgroundColor = "white";
-      choice[1].style.color = "black";
+    choice[0].style.backgroundColor = "#0369A1"; //color1
+      choice[0].style.color = "white"; //color2
+      choice[1].style.backgroundColor = "white"; //color2
+      choice[1].style.color = "#0369A1"; //color1
     } else if (option == "retailer" && state == 0) {
       state = 1;
-      let dis = document.querySelector("#loginpara");
-      dis.innerText = "Hello! Shipper please Sign In to your account";
-      let log = document.querySelector("#formlogo");
-      log.src = "assets/package-2.svg";
-      choice[1].style.backgroundColor = "black";
-      choice[1].style.color = "white";
-      choice[0].style.backgroundColor = "white";
-      choice[0].style.color = "black";
+      choice[1].style.backgroundColor = "#0369A1"; //color1
+      choice[1].style.color = "white"; //color2
+      choice[0].style.backgroundColor = "white"; //color2
+      choice[0].style.color = "#0369A1"; //color1
     }
   });
 }); //doubt auto refresh !
@@ -56,27 +52,44 @@ mode.addEventListener("click", () => {
     document.querySelector("#parent2para").style.color = "#f9f9f9";
     document.querySelector("#parent2heading").style.color = "white";
     document.querySelector("#joinheading").style.color = "white";
-    document.querySelector("#loginheading").style.color = "white";
-    document.querySelector("#loginpara").style.color = "#f9f9f9";
-    document.querySelector("#labelbox1").style.color = "white";
-    document.querySelector("#labelbox2").style.color = "white";
-    document.querySelector("#dhaa").style.color = "white";
-    document.querySelector("#loginbutton").addEventListener("mouseover", () => {
-      document.querySelector("#loginbutton").style.borderColor = "white";
+
+    document.querySelectorAll(".loginheading").forEach((ele) => {
+      ele.style.color = "white";
+    })
+     document.querySelectorAll(".loginpara").forEach((ele) => {
+       ele.style.color = "white";
+     });
+    document.querySelectorAll(".labelbox1").forEach((ele) => {
+      ele.style.color = "white";
     });
-    document.querySelector("#box1").style.backgroundColor = "black";
-    document.querySelector("#box2").style.backgroundColor = "black";
-    document.querySelector("#box1").style.color = "white";
-    document.querySelector("#box2").style.color = "white";
-    // choice.forEach((button) => {
-    //   if (button.style.backgroundColor == "black") {
-    //     button.style.backgroundColor = "white";
-    //     button.style.color = "black";
-    //   } else {
-    //     button.style.backgroundColor = "black";
-    //     button.style.color = "white";
-    //   }
-    // });
+     document.querySelectorAll(".labelbox2").forEach((ele) => {
+       ele.style.color = "white";
+     });
+    document.querySelectorAll(".dhaa").forEach((ele) => {
+      ele.style.color = "white";
+    });
+    document.querySelectorAll(".loginbutton").forEach((ele) => {
+       ele.addEventListener("mouseover", () => {
+         document.querySelectorAll(".loginbutton").forEach((ele1) => {
+           ele1.style.borderColor = "white";
+         })
+       });
+    })
+     
+   document.querySelector(".box1").forEach((ele) => {
+     ele.style.backgroundColor = "white";
+   });
+   document.querySelector(".box2").forEach((ele) => {
+     ele.style.backgroundColor = "white";
+   });
+    document.querySelector(".box1").forEach((ele) => {
+      ele.style.color = "white";
+    });
+    document.querySelector(".box2").forEach((ele) => {
+      ele.style.color = "white";
+    });
+    // let useropt = document.querySelectorAll(".selectuser");
+   //i need to consider the states
   } else {
     cntmode = "light";
     document.querySelector("body").style.backgroundColor = "white";
@@ -102,14 +115,55 @@ mode.addEventListener("click", () => {
     document.querySelector("#parent2para").style.color = "black";
     document.querySelector("#parent2heading").style.color = "black";
     document.querySelector("#joinheading").style.color = "black";
-    document.querySelector("#loginheading").style.color = "black";
-    document.querySelector("#loginpara").style.color = "black";
-    document.querySelector("#labelbox1").style.color = "black";
-    document.querySelector("#labelbox2").style.color = "black";
-    document.querySelector("#dhaa").style.color = "black";
-    document.querySelector("#box1").style.backgroundColor = "white";
-    document.querySelector("#box2").style.backgroundColor = "white";
-    document.querySelector("#box1").style.color = "black";
-    document.querySelector("#box2").style.color = "black";
+
+    document.querySelectorAll(".loginheading").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelectorAll(".loginpara").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelectorAll(".labelbox1").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelectorAll(".labelbox2").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelectorAll(".dhaa").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelectorAll(".loginbutton").forEach((ele) => {
+      ele.addEventListener("mouseover", () => {
+        document.querySelectorAll(".loginbutton").forEach((ele1) => {
+          ele1.style.borderColor = "black";
+        });
+      });
+    });
+
+    document.querySelector(".box1").forEach((ele) => {
+      ele.style.backgroundColor = "black";
+    });
+    document.querySelector(".box2").forEach((ele) => {
+      ele.style.backgroundColor = "black";
+    });
+    document.querySelector(".box1").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    document.querySelector(".box2").forEach((ele) => {
+      ele.style.color = "black";
+    });
+    //i need to consider the states!
   }
 });
+let btn = document.querySelectorAll(".selectuser");
+btn.forEach((ele) => {
+  let id = ele.id;
+  ele.addEventListener("click", () => {
+    if (id == "customer") {
+      document.querySelector("#cust").style.display = "block";
+      document.querySelector("#ship").style.display = "none";
+    } else {
+      document.querySelector("#cust").style.display = "none";
+      document.querySelector("#ship").style.display = "block";
+    }
+   })
+})
