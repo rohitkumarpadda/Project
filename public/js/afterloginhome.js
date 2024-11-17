@@ -4,11 +4,11 @@ mode.addEventListener("click", () => {
     if (click == 0) {
         click = 1;
       document.querySelector("#newdiv").style.display = "block";
-      document.querySelector("#imgprofile").src = "circle-x.svg";
+      document.querySelector("#imgprofile").src = "assets/circle-x.svg";
     } else {
         click = 0;
         document.querySelector("#newdiv").style.display = "none";
-        document.querySelector("#imgprofile").src = "user - Copy.svg";
+        document.querySelector("#imgprofile").src = "assets/user.svg";
       mode.style.backgroundColor = "white";
        mode.addEventListener("mouseout", () => {
          ele.style.backgroundColor = "#f3f4f6";
@@ -23,7 +23,7 @@ let mode1 = document.querySelector("#modebtn");
 mode1.addEventListener("click", () => {
   if (state == 0) {
     event.preventDefault();
-    document.querySelector("#modebtn1").src = "sun-moon.svg";
+    document.querySelector("#modebtn1").src = "assets/sun-moon.svg";
         state = 1;
         document.querySelector("body").style.backgroundColor = "black";
         document.querySelector("#heading").style.color = "white";
@@ -83,7 +83,7 @@ mode1.addEventListener("click", () => {
     } else {
        event.preventDefault();
     state = 0;
-      document.querySelector("#modebtn1").src = "moon.svg";
+      document.querySelector("#modebtn1").src = "assets/moon.svg";
      mode1.src = "moon.svg";
         document.querySelector("body").style.backgroundColor = "white";
         document.querySelector("#heading").style.color = "black";
