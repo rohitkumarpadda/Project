@@ -154,6 +154,7 @@ input{
     background-color: #0369A1;
 }
 #submitbtn{
+    height: 2.2rem;
     margin-top:1rem;
     padding:0.3rem; 
     font-size: 1.1rem;
