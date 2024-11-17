@@ -4,40 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SHIPIT-SIGNUP</title>
-    <link rel="stylesheet" href="/css/signup.css" />
+    <link rel="stylesheet" href="css/signup.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
       rel="stylesheet"
     />
+     <link rel="icon" type="image/x-icon" href="assets/ship (1).svg">
   </head>
   <body>
+    <div class="header">
+        <img src="assets/ship2.svg" class="shipimg">
+        <div id="heading" class="start">ShipIt</div>
+        <div id="middle">
+        <div  class="start"><a href="/" id="a1" class="starti">Home</a></div>
+        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
+        <div  class="start"><a href="/about" id="a3" class="starti">About Us</a></div> 
+        <div  class="start"><a href="/contact" id="a4" class="starti">Contact</a></div>
+        <div  class="start"></div>
+        </div>
+        <div id="right">
+        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
+        </div>
+     </div>
     <div id="parent">
-      <form action="/SignUp" method="post">
+      <form>
         <h1>Sign Up</h1>
         <p>Create your account to get started</p>
         <div id="name">
           <div class="namechild">
             <label for="firstname">FirstName*</label>
             <br />
-            <input type="text" id="firstname" name="Firstname" required />
+            <input type="text" id="firstname" name="firstname" required>
           </div>
           <div class="namechild">
             <label for="lastname">LastName*</label>
             <br />
-            <input type="text" id="lastname" name="Lastname" required />
+            <input type="text" id="lastname" name="lastname" required>
           </div>
         </div>
 
         <div id="second">
           <div class="input">
             <label for="emailid">Email*</label>
-            <br />
+            <br/>
             <input
               type="email"
               id="emailid"
-              name="Email"
+              name="emailid"
               class="outinput"
               required
               style="width: 30vw"
@@ -50,7 +65,7 @@
             <input
               type="date"
               id="dob"
-              name="DOB"
+              name="dob"
               class="outinput"
               required
               style="width: 30vw"
@@ -63,7 +78,7 @@
             <input
               type="password"
               id="Createpassword"
-              name="Password"
+              name="createpassword"
               class="outinput"
               required
               style="width: 30vw"
@@ -76,20 +91,19 @@
             <input
               type="password"
               id="verifypassword"
-              name="Verifypassword"
+              name="verifypassword"
               class="outinput"
               required
               style="width: 30vw"
             />
           </div>
           <div id="signupbutton">
-            <button id="signup" style="width: 30vw">Sign Up</button>
-          </div>
-          <div class="oauth-buttons">
-            <a href="/auth/google" class="oauth-btn google">Login with Google</a >
+            <button id="signup">Sign Up</button>
           </div>
         </div>
       </form>
     </div>
+     <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
   </body>
+  <script src="js/signup.js"></script>
 </html>

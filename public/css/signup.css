@@ -1,85 +1,199 @@
-#parent {
+/* body{
+  background-image:linear-gradient(to bottom left,blue,white);
   display: flex;
+  height:100vh;
   justify-content: center;
   align-items: center;
-  position: relative;
-  top: 10vh;
+} */
+body {
+	height: 100vh;
+	/* background-color:rgba(230, 234, 238, 0.953); */
+	font-family: Arial;
+}
+/* #0284C7 */
+.header {
+	display: flex;
+	position: relative;
+	padding: 0.5rem;
+}
+.shipimg {
+	height: 3rem;
+}
+#ship {
+	display: none;
+}
+#heading {
+	font-size: 2rem;
+	font-weight: bold;
+	font-family: Arial;
+}
+.mode {
+	padding: 0.4rem;
+}
+.mode:hover {
+	background-color: #f3f4f6;
+	border-radius: 50%;
+}
+#modebtn {
+	border-radius: 50%;
+	background-color: white;
+	border: 0.1px solid white;
+}
+.start {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.25rem;
+	margin: 0 0.5rem;
+	font-weight: 500;
+}
+#middle {
+	display: flex;
+	position: relative;
+	align-items: center;
+	justify-content: right;
+	width: 100vw;
+	left: 8rem;
+}
+#right {
+	display: flex;
+	align-items: center;
+	justify-content: right;
+	width: 100vw;
+}
+.starti {
+	text-decoration: none;
+	color: black;
+	transition: all 0.2s linear 0s;
+}
+.starti:hover {
+	color: #0369a1;
+	transform: translateY(-0.29rem);
+}
+#btn {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 2.75rem;
+	font-family: Arial;
+	border-radius: 2rem;
+	font-size: 1rem;
+	margin-left: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	border-width: 0px;
+	background-color: #0284c7;
+	color: aliceblue;
+	transition: all 0.2s linear;
+}
+#loginbtn {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 2.75rem;
+	font-family: Arial;
+	border-radius: 2rem;
+	font-size: 1rem;
+	margin-left: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	border-width: 0px;
+	background-color: #ffffff;
+}
+#loginbtn:hover {
+	z-index: 0;
+	background-color: #f3f4f6;
+}
+/* .btn::after{
+    content: '';
+    position: absolute;
+    height: 120%;
+    width:110%;
+     background-color: #0284C7;
+    border-radius:2rem;
+    z-index:-1;
+} */
+#btn:hover {
+	z-index: 0;
+	color: aliceblue;
+	background-color: #0369a1;
+}
+#parent {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	top: 10vh;
 }
 form {
-  display: inline-block;
-  border: 1px solid rgb(158, 155, 155);
-  border-radius: 7px;
-  padding: 0px 0px 40px 60px;
-  box-shadow: 5px 5px 5px rgb(204, 203, 203);
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+	display: inline-block;
+	border-radius: 15px;
+	padding: 0px 0px 40px 60px;
+	box-shadow: 0px 0px 5px 0px rgb(144, 143, 143);
+	margin-bottom: 7rem;
 }
 h1,
 p {
-  position: relative;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+	position: relative;
 }
 h1 {
-  left: 165px;
+	left: 165px;
 }
 p {
-  left: 110px;
+	left: 110px;
 }
 #name {
-  display: flex;
+	display: flex;
 }
 .namechild {
-  margin-right: 80px;
+	margin-right: 80px;
 }
 input {
-  height: 30px;
-  border-radius: 7px;
-  border: 1px solid rgb(218, 212, 212);
-  width: 12vw;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+	height: 30px;
+	border-radius: 10px;
+	border: 1px solid rgb(218, 212, 212);
+	width: 12vw;
+	padding: 0.2rem 0.5rem;
 }
 label {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
-  font-weight: 700;
-  margin-top: 15px;
+	font-weight: 700;
+	margin-top: 15px;
 }
 #second {
-  width: 30vw;
+	width: 30vw;
 }
 .input {
-  margin: 25px 0px;
+	margin: 25px 0px;
+}
+#signupbutton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #signup {
-  background-color: rgb(22, 22, 226);
-  color: white;
-  border: 1px solid black;
-  border-radius: 7px;
-  height: 30px;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+	background-color: #0284c7;
+	height: 40px;
+	width: 140px;
+	border-radius: 15px;
+	color: white;
+	font-size: 1rem;
+	padding: 0.1rem;
+	font-weight: 600;
 }
 #signup:hover {
-  border: 4px solid black;
-  font-size: large;
+	border: 4px solid rgb(32, 32, 32);
 }
-.oauth-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+#footer {
+	background-color: rgb(4, 4, 49);
+	color: white;
+	display: flex;
+	justify-content: center;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	height: 4rem;
 }
-
-.oauth-btn {
-  text-decoration: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.google {
-  background-color: #db4437;
+#footerpara {
+	position: relative;
+	left: 0rem;
+	color: white;
 }
