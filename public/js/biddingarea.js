@@ -125,7 +125,7 @@ function displayData(data) {
     bidInfo.classList.add('sideflexsubitem');
 
     const shipperName = document.createElement('h4');
-    shipperName.textContent = `${bid.shipperName || 'Shipper'}:`;
+    shipperName.textContent = `${bid.shipperId || 'Shipper'}:`;
 
     const bidTime = document.createElement('p');
     bidTime.textContent = timeSince(new Date(bid.createdAt));
