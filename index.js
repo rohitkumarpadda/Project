@@ -36,13 +36,13 @@ app.use(
 	})
 );
 
-// Rate limiter
-// const limiter = ratelimit({
-// 	windowMs: 15 * 60 * 1000, // 10 minutes
-// 	max: 100,
-// 	message: 'Too many requests from this IP, please try again later.',
-// });
-// app.use(limiter);
+//Rate limiter
+const limiter = ratelimit({
+	windowMs: 25 * 60 * 1000, // 10 minutes
+	max: 100,
+	message: 'Too many requests from this IP, please try again later.',
+});
+app.use(limiter);
 
 // Initialize Passport and session
 app.use(passport.initialize());
