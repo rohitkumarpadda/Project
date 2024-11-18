@@ -105,7 +105,7 @@ mode1.addEventListener('click', () => {
 		event.preventDefault();
 		state = 0;
 		document.querySelector('#modebtn1').src = 'assets/moon.svg';
-		mode1.src = 'moon.svg';
+		mode1.src = 'assets/moon.svg';
 		document.querySelector('body').style.backgroundColor = 'white';
 		document.querySelector('#heading').style.color = 'black';
 		document.querySelectorAll('.starti').forEach((ele) => {

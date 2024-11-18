@@ -39,6 +39,7 @@
             <button class="parent3btn" id="parent31">Current Shipments</button>
             <button class="parent3btn" id="parent32">Past Shipments</button>
         </div>
+        <section id="currentshippmentssection">
         <div id="parent3contents">
            <!-- fetch elements-->
            <script>
@@ -55,10 +56,11 @@
         
                 function displayOrders(data){
                     data.forEach((order,index)=>{
+                        if(order.status==="Pending" || order.status==="In Transit"){
                         const div=document.createElement('div');
                         div.classList.add('shippment');
                         div.innerHTML=`
-                        <div class="headingimgp3">
+                        <div class="headingimgp3" onClick="window.location.href='/orderStatus?orderId=${order._id}'">
                             <img src="assets/package (1).svg">
                             <h3 class="shippmentheading">Shipment#${index+1}</h3>
                             </div>
@@ -66,11 +68,52 @@
                             <p class="shippmentdicrip">Status:${order.status}</p>
                             <p class="shippmentdicrip">Time Left:2 days</p>`
                         parent3contents.appendChild(div);
-                    }); 
+                }}); 
                 }
             });
         </script>
         </div>
+        </section>
+        <section id="pastshippmentssection">
+            <div id="parent3contentsP">
+            <script>
+                const parent3contentsP=document.getElementById('parent3contentsP');
+                document.addEventListener('DOMContentLoaded',()=>{
+                    fetch("/showOrders").then((response)=>response.json()).then((data)=>{
+                        console.log(data);
+                        if(data.length===0){
+                            parent3contentsP.innerHTML="<h2>No Orders</h2>";
+                        }else{
+                        displayOrders(data); 
+                    }
+                    });
+            
+                    function displayOrders(data){
+                        let a=0;
+                        data.forEach((order,index)=>{
+                            if(order.status==="Delivered"){
+                                a++;
+                            const div=document.createElement('div');
+                            div.classList.add('shippment');
+                            div.innerHTML=`
+                            <div class="headingimgp3" onClick="window.location.href='/completed?orderId=${order._id}'" >
+                                <img src="assets/package (1).svg">
+                                <h3 class="shippmentheading">Shipment#${index+1}</h3>
+                                </div>
+                                <p class="shippmentdicrip">Bids:${order.Bids.length}</p>
+                                <p class="shippmentdicrip">Status:${order.status}</p>
+                                <p class="shippmentdicrip">Time Left:2 days</p>`
+                            parent3contentsP.appendChild(div);
+                    }}
+                    
+                ); if(a===0){
+                    parent3contentsP.innerHTML="<h2>No Past Orders</h2>";
+                }
+                    }
+                });
+            </script>
+            </div>
+        </section>
      </div>
      <section id="section1">
         <form id="form" action="/submit-shipment" method="post" enctype="multipart/form-data">
@@ -169,6 +212,18 @@
                  </div>
             </div>
             </div>
+            <div class="set">
+                <div class="formele">
+                     <label for="pickupDate">PickupDate</label>
+                <br>
+                <input type="date" name="PickupDate" placeholder="" id="pickupDate" required>
+                </div>
+                 <div class="formele">
+                <label for="DeliveryDate">Delivery Date</label>
+                <br>
+                 <input type="date" name="DeliveryDate" placeholder="" id="width" required>
+                 </div>
+            </div>
             <input type="text" name="Description" placeholder="Description" id="formdescription">
             <label for="forming">Photos</label>
             <input type="file" name="Images" placeholder="Upload photos here" id="formimg"  src="assets/camera.svg">
@@ -199,24 +254,27 @@
         </form>
      </section>
      <div id="newdiv">
-         <div id="body">
+        <script>
+            document.addEventListener("DOMContentLoaded",()=>{
+                fetch('/showUserDetails').then((response)=>response.json()).then((data)=>{
+                    displayProfile(data);
+                })
+               const newdiv=document.getElementById('newdiv');
+                function displayProfile(data){
+                     newdiv.innerHTML=` <div id="body">
             <h2 id="bodyheading">Profile</h2>
         <input type="image" id="profilephoto" name="Photo" placeholder="Upload img" src="assets/camera.svg">
          <div class="boxflex">
             <img src="assets/user.svg">
-            <div id="emailid" class="contents">UserName : User</div>
+            <div id="emailid" class="contents">UserName :${data.firstname} ${data.lastname}</div>
         </div>
         <div class="boxflex">
             <img src="assets/mail.svg">
-            <div id="emailid" class="contents">Email Id : Email@gmail.com</div>
-        </div>
-        <div class="boxflex">
-            <img src="assets/calendar.svg">
-        <div id="dob" class="contents">Date of Birth : 11-11-1111</div>
+            <div id="emailid" class="contents">Email Id : ${data.email}</div>
         </div>
         <div class="boxflex">
             <img src="assets/phone.svg">
-        <div id="phonenumber" class="contents">Phone Number : 9999999999</div>
+        <div id="phonenumber" class="contents">Phone Number :${data.phoneNumber}</div>
         </div>
         <div class="boxflex">
         <img src="assets/check.svg">
@@ -229,7 +287,11 @@
         <div class="boxflex">
         <div id="bio"></div>
         </div>
-        </div>
+        </div>`
+    }
+});
+        </script>
+        
      </div>
       <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
 </body>
