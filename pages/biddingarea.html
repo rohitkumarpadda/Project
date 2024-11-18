@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Bidding Area</title>
+		<link rel="stylesheet" href="css/biddingarea.css" id="linkstyle" />
+		<link rel="icon" type="image/x-icon" href="assets/ship2.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+                <a href="/logout"><img src="assets/log-out.svg" class="mode"></a>
+			</div>
+		</div>
+		<h1>Bidding Area - Shipment #<span id="shipmentNumber"></span></h1>
+		<div id="body">
+			<div class="bodycontent1">
+				<h3 class="mainheading">Shipment Details</h3>
+				<div id="twoline">
+					<img src="assets/package (1).svg" />
+					<h4>Shipment #<span id="shipmentId"></span></h4>
+					<div id="type"><span id="shipmentType"></span></div>
+				</div>
+				<p id="description">
+					<!-- Shipment description will go here -->
+				</p>
+				<div id="parentdivitem">
+					<div class="divitem">
+						<div class="divitemsc">
+							<img src="assets/map-pin (1).svg" />
+							<p>Pickup: <span id="pickupLocation"></span></p>
+						</div>
+						<div class="divitemsc">
+							<img src="assets/calendar (1).svg" />
+							<p>Pickup Date: <span id="pickupDate"></span></p>
+						</div>
+					</div>
+					<div class="divitem">
+						<div class="divitemsc">
+							<img src="assets/truck.svg" />
+							<p>Destination: <span id="destination"></span></p>
+						</div>
+						<div class="divitemsc">
+							<img src="assets/clock.svg" />
+							<p>Estimated Delivery: <span id="estimatedDelivery"></span></p>
+						</div>
+					</div>
+				</div>
+				<p class="normalpara">Weight: <span id="weight"></span> kg</p>
+				<p class="normalpara">Dimensions: <span id="dimensions"></span> cm</p>
+				<div id="imginput">
+					<!-- Images will be dynamically inserted here -->
+				</div>
+			</div>
+
+			<div id="sideflexdiv">
+				<div class="sideflex">
+					<h2 class="mainheading">Bidding Information</h2>
+					<div class="sideflexitem">
+						<p>Current Highest Bid:</p>
+						<h4 id="highestBid">₹0</h4>
+					</div>
+					<div class="sideflexitem">
+						<p>Time Left:</p>
+						<h4 id="timeLeft">-</h4>
+					</div>
+					<div class="sideflexitem">
+						<p>Number of Bidders:</p>
+						<h4 id="numberOfBidders">0</h4>
+					</div>
+				</div>
+				<div class="sideflex">
+					<h2 class="mainheading">Place Your Bid</h2>
+					<form id="bidForm">
+						<input
+							type="number"
+							name="bidamount"
+							placeholder="Enter Your Bid Amount"
+							required
+						/>
+						<button type="submit">Submit Bid</button>
+					</form>
+				</div>
+				<div class="sideflex">
+					<h2 class="mainheading">Recent Bids</h2>
+					<div id="recentBids">
+						<!-- Recent bids will be loaded here -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+		<script src="js/biddingarea.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const urlparams = new URLSearchParams(window.location.search);
+				const orderId = urlparams.get('orderId');
+				const shippperId = urlparams.get('shipperId');
+
+				fetch('/bidDetails?orderId=' + orderId)
+					.then((response) => response.json())
+					.then((data) => {
+						displayData(data);
+					});
+				displayData(data);
+			});
+		</script>
+	</body>
+</html>

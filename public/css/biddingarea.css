@@ -1,0 +1,221 @@
+body{
+    height:100vh;
+    /* background-color:rgba(230, 234, 238, 0.953); */
+     font-family:Arial;
+}
+/* #0284C7 */
+.header{
+ display:flex;
+ position:relative;
+ padding:0.5rem;
+  border-bottom:1px solid rgb(192, 189, 189);
+}
+.shipimg{
+    height:3rem;
+}
+#heading{
+ font-size: 2rem;
+ font-weight:bold;
+ font-family:Arial;
+}
+.mode{
+    padding:0.4rem;
+}
+.mode:hover{
+      background-color: #f3f4f6;
+      border-radius:50%;
+}
+#modebtn{
+    border-radius:50%;
+    background-color: white;
+    border:0.1px solid white;
+}
+.start{
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  margin:0 0.5rem;
+  font-weight:500;
+}
+#right{
+    display:flex;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+}
+#btn{
+    position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0.5rem 1.25rem;
+    border-width: 0px;
+    background-color: #0284C7;
+    color:aliceblue;
+    transition: all 0.2s linear;
+}
+/* .btn::after{
+    content: '';
+    position: absolute;
+    height: 120%;
+    width:110%;
+     background-color: #0284C7;
+    border-radius:2rem;
+    z-index:-1;
+} */
+#btn:hover{
+    z-index:0;
+    color:aliceblue;
+    background-color:#0369A1;
+}
+#footer{
+    background-color: rgb(4, 4, 49);
+    height:3rem;
+    display: flex;
+    justify-content: center;
+    width:98.5vw;
+    border-top-right-radius:1.1rem;
+    border-top-left-radius:1.1rem;
+}
+#footerpara{
+    text-align: center;
+    font-size:1.2rem ;
+    color:aliceblue;
+}
+#body{
+    padding:0rem 1rem;
+    display: flex;
+}
+h1{
+    margin:1rem;
+}
+.bodycontent1{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding:0rem 1.5rem;
+    box-shadow: 0 0 10px 0 rgb(181, 178, 178);
+    border-radius:15px;
+    margin:1rem 0.5rem;
+    width:54vw;
+    padding-bottom:2rem;
+}
+.mainheading{
+    font-size:2rem;
+     margin-bottom:0rem;
+}
+#twoline{
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+    width:12vw;
+    margin-bottom:-1rem;
+}
+#type{
+    background-color: rgb(182, 179, 179);
+    padding:0.1rem 1rem;
+    border-radius:15px;
+}
+.divitem{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: self-start;
+}
+.divitemsc{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.normalpara{
+    margin-bottom:-0.1rem;
+}
+#parentdivitem{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+    margin-bottom:-0.1rem;
+}
+#imginput{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top:1.5rem;
+}
+.imageupload img{
+    height:4rem;
+    border:2px solid black;
+    padding:2rem;
+}
+#sideflexdiv{
+    display: flex;
+    flex-direction: column;
+    padding-top:1rem;
+}
+.sideflex{
+    display: flex;
+    flex-direction: column;
+    justify-self: space-evenly;
+    padding:0.5rem 1rem;
+   box-shadow: 0 0 10px 0 rgb(181, 178, 178);
+    border-radius:10px;
+    width:28vw;
+    margin-left:1rem;
+    margin-bottom:1rem;
+}
+.sideflexitem{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+    margin:0.5rem;
+}
+.sideflexitem p{
+    font-size: 1.1rem;
+}
+.sideflexitem h4{
+    font-size:1.1rem;
+}
+.sideflexsubitem{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.sideflexsubitem p{
+    margin-top:-1rem;
+}
+#bodycontent2{
+   margin:1rem;
+   border:1px solid rgb(198, 197, 197);
+   padding:0.1rem 1.5rem;
+   border-radius:15px;
+   width:54vw;
+   padding-bottom:1.2rem;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+input{
+    margin:1rem 0rem;
+    font-size:1.2rem;
+    padding:0.2rem 1rem;
+    border-radius:20px;
+}
+form button{
+     font-size:1.2rem;
+     background-color: #0284C7;
+     color:white;
+     font-weight: 600;
+     padding:0.2rem 1rem;
+    border-radius:20px;
+}
+form button:hover{
+    background-color: #0369A1;
+}
