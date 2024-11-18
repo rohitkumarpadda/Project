@@ -4,7 +4,7 @@ btn.addEventListener("click", () => {
   if (state == 0) {
     state = 1;
     document.querySelector("body").style.backgroundColor = "black";
-    btn.src = "sun-moon.svg";
+    btn.src = "assets/sun-moon.svg";
     document.querySelector("#heading").style.color = "white";
     let nav_ele = document.querySelectorAll(".starti");
     nav_ele.forEach((ele) => {
@@ -40,7 +40,7 @@ btn.addEventListener("click", () => {
   } else {
     state = 0;
     document.querySelector("body").style.backgroundColor = "white";
-    btn.src = "moon.svg";
+    btn.src = "assets/moon.svg";
     document.querySelector("#heading").style.color = "black";
     let nav_ele = document.querySelectorAll(".starti");
     nav_ele.forEach((ele) => {
