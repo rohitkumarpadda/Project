@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Delivery Completed</title>
+		<link rel="stylesheet" href="css/deliverycomplete.css" />
+		<link rel="icon" href="assets/ship2.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="" id="a1" class="starti">Home</a></div>
+				<div class="start">
+					<a href="" id="a2" class="starti">How It Works</a>
+				</div>
+				<div class="start"><a href="" id="a3" class="starti">About Us</a></div>
+				<div class="start"><a href="" id="a4" class="starti">Contact</a></div>
+				<div class="start"></div>
+			</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+				<a href="/logout"><img src="assets/log-out.svg" class="mode" /></a>
+			</div>
+		</div>
+		<div id="dcmain">
+			<div id="dcmfirst">
+				<div class="dcheadings">
+					<img src="assets/package (1).svg" />
+					<h2>Shipment Details</h2>
+				</div>
+				<div id="status">
+					<p id="statusheading">Status:</p>
+					<p id="state">Delivered</p>
+				</div>
+				<div id="dcspecifications">
+					<div class="dcaboutshipment">
+						<div class="dcaboutshipmentitem">
+							<h3>Origin</h3>
+							<p id="originAddress">Address</p>
+						</div>
+						<div class="dcaboutshipmentitem">
+							<h3>Weight</h3>
+							<p id="weight">15Kg</p>
+						</div>
+						<div class="dcaboutshipmentitem">
+							<h3>Price</h3>
+							<p id="price">₹20,000</p>
+						</div>
+					</div>
+					<div class="dcaboutshipment">
+						<div class="dcaboutshipmentitem">
+							<h3>Delivered On</h3>
+							<p id="deliveredOn">2023-05-25</p>
+						</div>
+						<div class="dcaboutshipmentitem">
+							<h3>Destination</h3>
+							<p id="destinationAddress">To Address</p>
+						</div>
+						<div class="dcaboutshipmentitem">
+							<h3>Dimensions</h3>
+							<p id="dimensions">50cm x 30cm x 20cm</p>
+						</div>
+					</div>
+				</div>
+				<div id="dcdescription">
+					<h3>Description</h3>
+					<p id="description">
+						Electronics equipment - fragile, handle with care
+					</p>
+				</div>
+			</div>
+			<div id="dcmsecond">
+				<div class="dcmseconditem">
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<h2>Shipper Information</h2>
+					</div>
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<p id="shipperName">Company Name</p>
+					</div>
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<p id="shipperDeliveries">125 Deliveries</p>
+					</div>
+				</div>
+				<div class="dcmseconditem">
+					<div class="dcheadings">
+						<img src="assets/check.svg" />
+						<h2>Delivery Confirmation</h2>
+					</div>
+					<p style="color: green">
+						Your package has been delivered successfully
+					</p>
+					<p>
+						If you have any issues with your delivery, please contact our
+						customer support within 48 hours.
+					</p>
+					<a href="/contact" id="issue">Report an Issue</a>
+					<!-- go to contact us page -->
+				</div>
+			</div>
+		</div>
+		<div id="dcbottomer">
+			<div id="dcbottom">
+				<div class="dcheadings">
+					<img src="assets/star.svg" />
+					<h2>Rate and Review</h2>
+				</div>
+
+				<div id="ratingscomplete">
+					<div class="ratingsgiving">
+						<p>Rate Your Experience</p>
+						<div class="ratingStars" data-rating-type="overallRating">
+							<img src="assets/star.svg" class="ratingsobs" data-value="1" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="2" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="3" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="4" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="5" />
+						</div>
+						<input type="hidden" class="ratingValue" value="0" />
+					</div>
+
+					<div class="ratingsgiving">
+						<p>Punctuality</p>
+						<div class="ratingStars" data-rating-type="punctualityRating">
+							<img src="assets/star.svg" class="ratingsobs" data-value="1" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="2" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="3" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="4" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="5" />
+						</div>
+						<input type="hidden" class="ratingValue" value="0" />
+					</div>
+
+					<div class="ratingsgiving">
+						<p>Professionalism</p>
+						<div class="ratingStars" data-rating-type="professionalismRating">
+							<img src="assets/star.svg" class="ratingsobs" data-value="1" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="2" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="3" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="4" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="5" />
+						</div>
+						<input type="hidden" class="ratingValue" value="0" />
+					</div>
+
+					<!-- Communication -->
+					<div class="ratingsgiving">
+						<p>Communication</p>
+						<div class="ratingStars" data-rating-type="communicationRating">
+							<img src="assets/star.svg" class="ratingsobs" data-value="1" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="2" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="3" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="4" />
+							<img src="assets/star.svg" class="ratingsobs" data-value="5" />
+						</div>
+						<input type="hidden" class="ratingValue" value="0" />
+					</div>
+				</div>
+
+				<form id="reviewForm">
+					<label for="dctextarea">Write your experience</label>
+					<br /><br />
+					<textarea
+						id="dctextarea"
+						placeholder="Share your experience with this shipment"
+						required
+					></textarea>
+					<br />
+					<button id="dcsecondbtn" type="submit">Submit Review</button>
+				</form>
+			</div>
+		</div>
+
+		<!-- ... existing code ... -->
+
+		<script src="js/deliverycomplete.js"></script>
+
+		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+	</body>
+	<script src="js/deliverycomplete.js"></script>
+</html>

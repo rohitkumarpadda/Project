@@ -1,0 +1,191 @@
+body{
+    height:100vh;
+    /* background-color:rgba(230, 234, 238, 0.953); */
+     font-family:Arial;
+}
+/* #0284C7 */
+.header{
+ display:flex;
+ position:relative;
+ padding:0.5rem;
+}
+.shipimg{
+    height:3rem;
+}
+#heading{
+ font-size: 2rem;
+ font-weight:bold;
+ font-family:Arial;
+}
+.mode{
+    padding:0.4rem;
+}
+.mode:hover{
+      background-color: #f3f4f6;
+      border-radius:50%;
+}
+#modebtn{
+    border-radius:50%;
+    background-color: white;
+    border:0.1px solid white;
+}
+.start{
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  margin:0 0.5rem;
+  font-weight:500;
+}
+#middle{
+    display: flex;
+    position: relative;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+    left:8rem;
+}
+#right{
+    display:flex;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+}
+.starti{
+    text-decoration: none;
+    color:black;
+    transition:all 0.2s linear 0s;
+}
+.starti:hover{
+    color:#0369A1;
+    transform:translateY(-0.29rem);
+}
+#btn{
+    position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0.5rem 1.25rem;
+    border-width: 0px;
+    background-color: #0284C7;
+    color:aliceblue;
+    transition: all 0.2s linear;
+}
+#dcmain{
+    padding: 0.5rem 1rem;
+    display: flex;
+    margin-top:1rem;
+}
+#dcmfirst{
+    background-color: white;
+    box-shadow: 0 0 5px 0 rgb(106, 105, 105);
+    padding:0.5rem 1rem;
+    border-radius:15px;
+    width:60vw;
+}
+.dcheadings{
+    display:flex;
+    justify-content: flex-start;
+}
+#status{
+    display:flex;
+    justify-content: flex-start;
+}
+#dcspecifications{
+    display: flex;
+}
+.dcaboutshipment{
+    display: flex;
+    flex-direction: column;
+    width:50%;
+}
+#issue{
+    background-color:#0284C7;
+    padding:0.5rem 1rem;
+    color:white;
+    font-size:1.2rem;
+    text-decoration: none;
+    border-radius:10px;
+}
+.dcmseconditem{
+  background-color: white;
+  width:35vw;
+  margin-left:2rem;
+  padding:1.5rem 1rem;
+  border-radius:15px;
+  box-shadow:0 0 5px 0 rgb(132, 130, 130);
+  margin:1.5rem 1rem;
+}
+.ratingsobs{
+    fill:yellow;
+    /* not working */
+}
+#dcbottomer{
+    display: flex;
+    justify-content: center;
+}
+#dcbottom{
+    background-color:white;
+    padding:0.5rem 1rem;
+    box-shadow: 0 0 5px 0 rgb(139, 137, 137);
+    width:56vw;
+    border-radius:15px;
+    margin:1rem;
+}
+.ratingsgiving{
+    margin-bottom:0.5rem;
+}
+#ratingscomplete{
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+    margin-top:0.5rem;
+}
+#reviewForm{
+    margin-left:6%;
+}
+textarea{
+    background-color: white;
+    height:5rem;
+    width:90%;
+    border-radius:10px;
+    border:1px solid black;
+    padding:0.2rem 1rem;
+    margin-top:0.2rem;
+}
+#dcsecondbtn{
+     border-radius:10px;
+     height:2rem;
+     width:90%;
+     color:white;
+     background-color: #0284C7;
+     margin-left:1rem;
+     margin-top:0.5rem;
+     font-weight:600;
+     font-size:1.1rem;
+}
+#dcsecondbtn :hover{
+  background-color: #0369A1;
+}
+img{
+    margin-right:0.2rem;
+}
+#footer{
+    background-color: rgb(4, 4, 49);
+    height:3rem;
+    display: flex;
+    justify-content: center;
+    width:98.5vw;
+    border-top-right-radius:1.1rem;
+    border-top-left-radius:1.1rem;
+}
+#footerpara{
+    text-align: center;
+    font-size:1.2rem ;
+    color:aliceblue;
+}
