@@ -11,12 +11,15 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const https = require('https');
 const multer = require('multer');
 const crypto = require('crypto');
+const Razorpay = require('razorpay');
 
 const app = express();
 const LoginData = require('./models/LoginData');
 const ShipperData = require('./models/shipperData');
 const orderData = require('./models/orderData');
-
+const ReviewData = require('./models/reviewData.js');
+const Contact = require('./models/contactModel.js');
+const ShipperBank = require('./models/shipperBanking.js');
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
 	useNewUrlParser: true,
@@ -34,12 +37,12 @@ app.use(
 );
 
 // Rate limiter
-const limiter = ratelimit({
-	windowMs: 10 * 60 * 1000, // 10 minutes
-	max: 100,
-	message: 'Too many requests from this IP, please try again later.',
-});
-app.use(limiter);
+// const limiter = ratelimit({
+// 	windowMs: 15 * 60 * 1000, // 10 minutes
+// 	max: 100,
+// 	message: 'Too many requests from this IP, please try again later.',
+// });
+// app.use(limiter);
 
 // Initialize Passport and session
 app.use(passport.initialize());
@@ -233,16 +236,175 @@ app.get('/about', (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/about.html'));
 });
 
+app.get('/contact', (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/contact.html'));
+});
+
+app.post('/shipperSignIn', async (req, res) => {
+	const { Email, Password } = req.body;
+	console.log(req.body);
+	const shipper = await ShipperData.findOne({ email: Email });
+	if (!shipper) {
+		return sendAlert(res, 'User not found', '/shipperSignIn');
+	}
+	const isMatch = await bcrypt.compare(Password, shipper.password);
+	if (isMatch) {
+		shipper.lastlogin = new Date();
+		req.session.user = shipper;
+		res.redirect('/dashboard?userId=' + shipper.userId);
+	} else {
+		sendAlert(res, 'Invalid Credentials', '/shipperSignIn');
+	}
+});
+
 app.get('/shipperRegistration', (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/shipperregister.html'));
+});
+
+app.get('/showOrders', isLoggedInAsuser, async (req, res) => {
+	const userId = req.session.user.userId;
+
+	const orders = await orderData.find({ userId: userId }).lean();
+	res.json(orders);
 });
 
 app.get('/dashboard', isLoggedInAsShipper, (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/shipperdashbord.html'));
 });
 
+app.get('/showShipperDetails', isLoggedInAsShipper, async (req, res) => {
+	const userId = req.session.user.userId;
+	const shipper = await ShipperData.findOne({ userId: userId }).lean();
+
+	res.json(shipper);
+});
+
 app.get('/afterlogin', isLoggedInAsuser, (req, res) => {
 	res.sendFile(path.join(__dirname, 'pages/afterloginhome.html'));
+});
+
+app.get('/showUserDetails', isLoggedInAsuser, async (req, res) => {
+	const userId = req.session.user.userId;
+	const user = await LoginData.findOne({ userId: userId }).lean();
+
+	res.json(user);
+});
+
+app.get('/orderBids', isLoggedInAsShipper, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/biddingarea.html'));
+});
+
+app.get('/selectOrder', isLoggedInAsShipper, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/shipperfilter.html'));
+});
+
+app.get('/filterOrders', isLoggedInAsShipper, async (req, res) => {
+	const { weight } = req.query;
+	if (weight) {
+		const orders = await orderData
+			.find({ 'dimensions.weight': { $lte: weight } })
+			.lean();
+		res.json(orders);
+	} else {
+		const orders = await orderData
+			.find({ 'dimensions.weight': { $lte: 500 } })
+			.lean();
+		res.json(orders);
+	}
+});
+
+// Fetch order details
+app.get('/bidDetails', async (req, res) => {
+	const orderId = req.query.orderId;
+	if (!orderId) {
+		return res.status(400).send('orderId is required');
+	}
+	try {
+		const order = await orderData.findById(orderId).lean();
+		if (!order) {
+			return res.status(404).send('Order not found');
+		}
+		res.json(order);
+	} catch (error) {
+		console.error('Error fetching order details:', error);
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+app.get('/orderStatus', isLoggedInAsuser, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/deliveryprogress.html'));
+});
+
+app.get('/completed', isLoggedInAsuser, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/deliverycomplete.html'));
+});
+
+app.get('/orderDetailsComplete', async (req, res) => {
+	const orderId = req.query.orderId;
+	if (!orderId) {
+		return res.status(400).json({ error: 'Order ID is required' });
+	}
+
+	try {
+		const order = await orderData.findById(orderId).lean();
+		if (!order) {
+			return res.status(404).json({ error: 'Order not found' });
+		}
+		res.json(order);
+	} catch (error) {
+		console.error('Error fetching order details:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+app.get('/shipperDetailsComplete', async (req, res) => {
+	const shipperId = req.query.shipperId;
+	if (!shipperId) {
+		return res.status(400).json({ error: 'Shipper ID is required' });
+	}
+
+	try {
+		const shipper = await ShipperData.findOne({ userId: shipperId }).lean();
+		if (!shipper) {
+			return res.status(404).json({ error: 'Shipper not found' });
+		}
+		res.json(shipper);
+	} catch (error) {
+		console.error('Error fetching shipper details:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+// Place a bid
+app.post('/placeBid', isLoggedInAsShipper, async (req, res) => {
+	const { orderId, amount } = req.body;
+	const shipperId = req.session.user.userId;
+	const shipperName = req.session.user.fullname;
+
+	if (!orderId || !amount) {
+		return res.json({ success: false, message: 'Missing required fields' });
+	}
+	try {
+		const order = await orderData.findById(orderId);
+		if (!order) {
+			return res.json({ success: false, message: 'Order not found' });
+		}
+
+		// Add the bid
+		order.Bids.push({
+			shipperId: shipperId,
+			shipperName: shipperName,
+			amount: amount,
+			createdAt: new Date(),
+		});
+
+		await order.save();
+
+		res.json({ success: true });
+	} catch (error) {
+		console.error('Error placing bid:', error);
+		res.json({ success: false, message: 'Server error' });
+	}
 });
 
 // Sign Up route
@@ -437,10 +599,7 @@ async function checkDLVerificationStatus(requestId) {
 
 					// Access the first task in the response array
 					const task = body[0];
-					if (!task) {
-						console.error('No task found in response');
-						return reject(new Error('No task found in API response'));
-					}
+					console.log('Task:Driving license \n', task);
 
 					// Check if the task has a "completed_at" field
 					if (task.completed_at) {
@@ -585,9 +744,7 @@ async function checkVehicleVerificationStatus(requestId) {
 					}
 
 					const task = body[0];
-					if (!task) {
-						return reject(new Error('No task found in API response'));
-					}
+					console.log('Task:Vehicle Registration \n', task);
 
 					if (task.completed_at) {
 						const extractionOutput = task.result?.extraction_output;
@@ -597,6 +754,10 @@ async function checkVehicleVerificationStatus(requestId) {
 									valid: true,
 									vehicleClass: extractionOutput.vehicle_class,
 									registrationNumber: extractionOutput.registration_number,
+									maker_model: extractionOutput.maker_model,
+									avg_gross_vehicle_weight:
+										extractionOutput.avg_gross_vehicle_weight,
+									unladen_weight: extractionOutput.unladen_weight,
 								});
 							} else {
 								return resolve({ valid: false });
@@ -629,7 +790,7 @@ async function checkVehicleVerificationStatus(requestId) {
 }
 
 app.post('/shipperRegistration', async (req, res) => {
-	const {
+	let {
 		Fullname,
 		Email,
 		PhoneNumber,
@@ -639,6 +800,7 @@ app.post('/shipperRegistration', async (req, res) => {
 		VehicleRegistration,
 		Password,
 		VerifyPassword,
+		DateOfBirth,
 	} = req.body;
 
 	if (!passwordsMatch(Password, VerifyPassword)) {
@@ -648,12 +810,12 @@ app.post('/shipperRegistration', async (req, res) => {
 			'/shipperRegistration'
 		);
 	}
-
+	console.log(DateOfBirth);
 	try {
 		// Initiate Driving License Verification
 		const dlRequestId = await initiateDLVerification(
 			DrivingLicense,
-			'2005-12-28'
+			DateOfBirth
 		);
 		const dlVerificationResult = await checkDLVerificationStatus(dlRequestId);
 
@@ -687,6 +849,9 @@ app.post('/shipperRegistration', async (req, res) => {
 		if (!vehicleVerificationResult.valid) {
 			console.log('Vehicle Registration Verification Successfull');
 		}
+		let Capacity =
+			vehicleVerificationResult.avg_gross_vehicle_weight -
+			vehicleVerificationResult.unladen_weight;
 
 		// Save shipper data if both validations are successful
 		const shipperData = await ShipperData.create({
@@ -704,6 +869,8 @@ app.post('/shipperRegistration', async (req, res) => {
 			DL_Address: dlVerificationResult.DL_Address,
 			state: dlVerificationResult.state,
 			vehicleClass: vehicleVerificationResult.vehicleClass,
+			vehicleModel: vehicleVerificationResult.maker_model,
+			capacity: Capacity,
 		});
 
 		req.session.user = shipperData;
@@ -755,6 +922,8 @@ app.post(
 				CityTo,
 				StateTo,
 				Description,
+				PickupDate,
+				DeliveryDate,
 			} = req.body;
 
 			// Process uploaded images
@@ -785,7 +954,9 @@ app.post(
 				},
 				description: Description,
 				images: imagePaths,
-				status: 'Pending',
+				status: 'In Auction',
+				pickupDate: new Date(PickupDate),
+				deliveryDate: new Date(DeliveryDate),
 			});
 
 			res.redirect('/afterlogin');
@@ -795,6 +966,288 @@ app.post(
 		}
 	}
 );
+
+app.post('/submitReview', isLoggedInAsuser, async (req, res) => {
+	const {
+		orderId,
+		overallRating,
+		punctualityRating,
+		professionalismRating,
+		communicationRating,
+		review,
+	} = req.body;
+	const userId = req.session.user.userId;
+
+	if (
+		!orderId ||
+		!overallRating ||
+		!punctualityRating ||
+		!professionalismRating ||
+		!communicationRating ||
+		!review
+	) {
+		return res.json({ success: false, error: 'Missing required fields' });
+	}
+
+	try {
+		// Check if the review for this order by this user already exists
+		const existingReview = await ReviewData.findOne({ orderId, userId });
+		if (existingReview) {
+			return res.json({
+				success: false,
+				error: 'You have already reviewed this order.',
+			});
+		}
+
+		// Get the order details to verify the shipperId
+		const order = await orderData.findById(orderId);
+		if (!order) {
+			return res.json({ success: false, error: 'Order not found' });
+		}
+
+		const shipperId = order.acceptedShipperId;
+		if (!shipperId) {
+			return res.json({
+				success: false,
+				error: 'Order has no assigned shipper',
+			});
+		}
+
+		// Create a new review
+		const newReview = new ReviewData({
+			orderId,
+			shipperId,
+			userId,
+			overallRating,
+			punctualityRating,
+			professionalismRating,
+			communicationRating,
+			review,
+		});
+
+		await newReview.save();
+
+		const reviews = await ReviewData.find({ shipperId });
+
+		const totalOverallRating = reviews.reduce(
+			(sum, r) => sum + r.overallRating,
+			0
+		);
+		const totalPunctualityRating = reviews.reduce(
+			(sum, r) => sum + r.punctualityRating,
+			0
+		);
+		const totalProfessionalismRating = reviews.reduce(
+			(sum, r) => sum + r.professionalismRating,
+			0
+		);
+		const totalCommunicationRating = reviews.reduce(
+			(sum, r) => sum + r.communicationRating,
+			0
+		);
+
+		const reviewCount = reviews.length;
+
+		const averageOverallRating = totalOverallRating / reviewCount;
+		const averagePunctualityRating = totalPunctualityRating / reviewCount;
+		const averageProfessionalismRating =
+			totalProfessionalismRating / reviewCount;
+		const averageCommunicationRating = totalCommunicationRating / reviewCount;
+
+		// Update shipper data
+		await ShipperData.updateOne(
+			{ userId: shipperId },
+			{
+				shipperRating: averageOverallRating,
+				punctualityRating: averagePunctualityRating,
+				professionalismRating: averageProfessionalismRating,
+				communicationRating: averageCommunicationRating,
+				shipperRatingCount: reviewCount,
+			}
+		);
+
+		res.json({ success: true });
+	} catch (error) {
+		console.error('Error submitting review:', error);
+		res.json({ success: false, error: 'Internal server error' });
+	}
+});
+
+app.get('/getShipperReviews', isLoggedInAsShipper, async (req, res) => {
+	const shipperId = req.session.user.userId;
+
+	try {
+		const reviews = await ReviewData.find({ shipperId }).lean();
+		res.json(reviews);
+	} catch (error) {
+		console.error('Error fetching shipper reviews:', error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
+app.post('/contact', async (req, res) => {
+	const { Name, Email, Phno, Value, Subject, Textbox } = req.body;
+
+	try {
+		const contact = await Contact.create({
+			name: Name,
+			email: Email,
+			phone: Phno,
+			value: Value,
+			subject: Subject,
+			text: Textbox,
+		});
+		return sendAlert(res, 'Message sent successfully', '/contact');
+	} catch (error) {
+		console.error('Error sending message:', error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
+app.get('/orderDetailsProgress', async (req, res) => {
+	const orderId = req.query.orderId;
+	if (!orderId) {
+		return res.status(400).json({ error: 'Order ID is required' });
+	}
+	try {
+		const order = await orderData.findById(orderId).lean();
+		if (!order) {
+			return res.status(404).json({ error: 'Order not found' });
+		}
+		res.json(order);
+	} catch (error) {
+		console.error('Error fetching order details:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+app.post('/acceptBid', async (req, res) => {
+	const { orderId, shipperId, amount } = req.body;
+	if (!orderId || !shipperId || amount == null) {
+		return res
+			.status(400)
+			.json({ success: false, message: 'Missing required fields' });
+	}
+	try {
+		const order = await orderData.findById(orderId);
+		if (!order) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Order not found' });
+		}
+		order.status = 'In Transit';
+		order.acceptedShipperId = shipperId;
+		order.acceptedBidAmount = amount; // Store accepted bid amount
+		await order.save();
+		res.json({ success: true });
+	} catch (error) {
+		console.error('Error accepting bid:', error);
+		res.status(500).json({ success: false, message: 'Internal Server Error' });
+	}
+});
+
+// Fetch shipper details
+app.get('/shipperDetailsProgress', async (req, res) => {
+	const shipperId = req.query.shipperId;
+	if (!shipperId) {
+		return res.status(400).json({ error: 'Shipper ID is required' });
+	}
+	try {
+		const shipper = await ShipperData.findOne({ userId: shipperId }).lean();
+		if (!shipper) {
+			return res.status(404).json({ error: 'Shipper not found' });
+		}
+		res.json(shipper);
+	} catch (error) {
+		console.error('Error fetching shipper details:', error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+app.post('/saveBanking', isLoggedInAsShipper, async (req, res) => {
+	const { AccountHolder, AccountNumber, IFSC, BankName, UPI } = req.body;
+	if (ShipperBank.findOne({ shipperId: req.session.user.userId })) {
+		ShipperBank.updateOne(
+			{ shipperId: req.session.user.userId },
+			{
+				accountHolderName: AccountHolder,
+				accountNumber: AccountNumber,
+				ifscCode: IFSC,
+				bankName: BankName,
+				upiid: UPI,
+			}
+		);
+	}
+	const user = await ShipperBank.create({
+		shipperId: req.session.user.userId,
+		accountHolderName: AccountHolder,
+		accountNumber: AccountNumber,
+		ifscCode: IFSC,
+		bankName: BankName,
+		upiid: UPI,
+	});
+	res.redirect('/dashboard');
+});
+
+const razorpay = new Razorpay({
+	key_id: process.env.RAZORPAY_KEY_ID,
+	key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Route to create a Razorpay order
+app.post('/createOrder', async (req, res) => {
+	const { amount, orderId } = req.body;
+
+	const options = {
+		amount: amount, // Amount in paisa
+		currency: 'INR',
+		receipt: `receipt_order_${orderId}`,
+	};
+
+	try {
+		const order = await razorpay.orders.create(options);
+		res.json({
+			success: true,
+			order,
+			keyId: process.env.RAZORPAY_KEY_ID,
+		});
+	} catch (error) {
+		console.error('Error creating Razorpay order:', error);
+		res
+			.status(500)
+			.json({ success: false, message: 'Error creating Razorpay order' });
+	}
+});
+
+// Route to verify payment
+app.post('/verifyPayment', async (req, res) => {
+	const { paymentData, orderId } = req.body;
+
+	const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+		paymentData;
+
+	const computed_signature = crypto
+		.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+		.update(`${razorpay_order_id}|${razorpay_payment_id}`)
+		.digest('hex');
+
+	if (computed_signature === razorpay_signature) {
+		try {
+			// Update order payment status
+			await orderData.findByIdAndUpdate(orderId, { paymentStatus: 'Paid' });
+			res.json({ success: true });
+		} catch (error) {
+			console.error('Error updating payment status:', error);
+			res
+				.status(500)
+				.json({ success: false, message: 'Error updating payment status' });
+		}
+	} else {
+		res
+			.status(400)
+			.json({ success: false, message: 'Invalid payment signature' });
+	}
+});
 
 // Logout route
 app.get('/logout', (req, res) => {
