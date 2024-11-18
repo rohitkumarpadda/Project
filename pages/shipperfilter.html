@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Filter</title>
+		<link rel="stylesheet" href="css/shipperfilter.css" id="linkstyle" />
+		<link rel="icon" type="image/x-icon" href="assets/ship2.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="" id="a1" class="starti">Home</a></div>
+				<div class="start">
+					<a href="" id="a2" class="starti">How It Works</a>
+				</div>
+				<div class="start"><a href="" id="a3" class="starti">About Us</a></div>
+				<div class="start"><a href="" id="a4" class="starti">Contact</a></div>
+				<div class="start"></div>
+			</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+				<a href="/logout"><img src="assets/log-out.svg" class="mode"></a>
+			</div>
+		</div>
+		<div id="body">
+			<div id="filter">
+				<div class="filter-container">
+					<label for="weightRange">Weight Range (kg)</label>
+					<div class="slider-container">
+						<input
+							type="range"
+							id="weightRange"
+							min="0"
+							max="1000"
+							value="500"
+							step="10"
+							oninput="updateSlider(this)"
+						/>
+						<span id="sliderValue">500 kg</span>
+					</div>
+				</div>
+				<button type="submit" id="applyfilter">Apply Filter</button>
+			</div>
+			<div id="shiperareabid">
+				<div class="shipment-card">
+					<div class="card-header">
+						<div>
+							<h3>Shipment #1 <span class="tag">Electronics</span></h3>
+							<p>Dimensions: 30x20x15 cm</p>
+							<p>Weight: 25 kg</p>
+						</div>
+						<div class="bid-info">
+							<h3>$800</h3>
+							<p>Current Bid</p>
+						</div>
+					</div>
+					<div class="card-body">
+						<p>
+							<i class="fas fa-map-marker-alt"></i> <strong>Pickup:</strong> New
+							York, NY
+						</p>
+						<p>
+							<i class="fas fa-truck"></i> <strong>Destination:</strong> Los
+							Angeles, CA
+						</p>
+						<p>
+							<i class="fas fa-calendar-alt"></i>
+							<strong>Pickup Date:</strong> 2023-11-10
+						</p>
+						<p>
+							<i class="fas fa-clock"></i>
+							<strong>Estimated Delivery:</strong> 3-5 days
+						</p>
+					</div>
+					<div class="card-footer">
+						<button class="bid-button">Place Bid</button>
+					</div>
+				</div>
+			</div>
+			<script src="js/shipperfilter.js"></script>
+		</div>
+		<script>
+			const urlparams = new URLSearchParams(window.location.search);
+			const shipperId = urlparams.get('shipperId');
+			const applyFilterButton = document.getElementById('applyfilter');
+			document.onload = fetchOrdersByWeight(500);
+			// Add click event listener
+			applyFilterButton.addEventListener('click', () => {
+				const weight = document.getElementById('weightRange').value;
+				fetchOrdersByWeight(weight);
+			});
+			function fetchOrdersByWeight(weight) {
+				fetch(`/filterOrders?weight=${weight}`)
+					.then((response) => response.json())
+					.then((orders) => displayOrders(orders))
+					.catch((error) => console.error('Error fetching orders:', error));
+			}
+
+			function displayOrders(orders) {
+				const shiperAreaBid = document.getElementById('shiperareabid');
+				shiperAreaBid.innerHTML = ''; // Clear existing content
+
+				if (orders.length === 0) {
+					shiperAreaBid.innerHTML =
+						'<p>No orders found for the selected weight.</p>';
+					return;
+				}
+
+				orders.forEach((order) => {
+					const shipmentCard = document.createElement('div');
+					shipmentCard.className = 'shipment-card';
+
+					shipmentCard.innerHTML = `
+        <div class="card-header">
+          <div>
+            <h3>Shipment #${order._id} ${
+						order.category ? `<span class="tag">${order.category}</span>` : ''
+					}</h3>
+            <p>Dimensions: ${order.dimensions.length}x${
+						order.dimensions.width
+					}x${order.dimensions.height} cm</p>
+            <p>Weight: ${order.dimensions.weight} kg</p>
+          </div>
+          <div class="bid-info">
+            <h3>${
+							order.Bids[0] ? `$${order.Bids[0].amount}` : 'No bids yet'
+						}</h3>
+            <p>Current Bid</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <p><strong>Pickup:</strong> ${order.fromAddress.city}, ${
+						order.fromAddress.state
+					}</p>
+          <p><strong>Destination:</strong> ${order.toAddress.city}, ${
+						order.toAddress.state
+					}</p>
+        </div>
+        <div class="card-footer">
+          <button class="bid-button" onClick="window.location.href='/orderBids?orderId=${
+						order._id
+					}&shipperId=${shipperId}'">Place Bid</button>
+        </div>
+      `;
+
+					shiperAreaBid.appendChild(shipmentCard);
+				});
+			}
+		</script>
+	</body>
+</html>
