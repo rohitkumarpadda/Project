@@ -109,29 +109,66 @@
 						});
 					</script>
 				</div>
+				<!-- pages/shipperdashbord.html -->
+
+				<!-- ... existing code ... -->
+
 				<div class="contents">
 					<div class="contentdiv">
 						<h3 class="contentheading">Profile Details</h3>
 						<img src="" />
 					</div>
-					<!-- star's -->
+
+					<!-- Replace this section -->
 					<div id="rating">
 						<img src="assets/star.svg" />
-						4.8(124 reviews)
+						<span id="overallRating">N/A</span>(<span id="ratingCount">0</span>
+						reviews)
 					</div>
 					<div class="ratingthings">
 						<p>Punctuality</p>
-						<h4>-58%</h4>
+						<h4 id="punctualityRating">-</h4>
 					</div>
 					<div class="ratingthings">
 						<p>Communication</p>
-						<h4>-70%</h4>
+						<h4 id="communicationRating">-</h4>
 					</div>
 					<div class="ratingthings">
 						<p>Professionalism</p>
-						<h4>-85%</h4>
+						<h4 id="professionalismRating">-</h4>
 					</div>
 				</div>
+
+				<!-- ... existing code ... -->
+
+				<script>
+					document.addEventListener('DOMContentLoaded', () => {
+						fetch('/showShipperDetails')
+							.then((response) => response.json())
+							.then((data) => {
+								document.getElementById('overallRating').textContent =
+									'⭐' + data.shipperRating.toFixed(1) || 'N/A';
+								document.getElementById('ratingCount').textContent =
+									data.shipperRatingCount || '0';
+
+								document.getElementById('punctualityRating').textContent =
+									'⭐' + data.punctualityRating
+										? data.punctualityRating.toFixed(1)
+										: '-';
+								document.getElementById('communicationRating').textContent =
+									'⭐' + data.communicationRating
+										? data.communicationRating.toFixed(1)
+										: '-';
+								document.getElementById('professionalismRating').textContent =
+									'⭐' + data.professionalismRating
+										? data.professionalismRating.toFixed(1)
+										: '-';
+							})
+							.catch((error) => {
+								console.error('Error fetching shipper details:', error);
+							});
+					});
+				</script>
 			</div>
 			<div id="wholeps">
 				<h2>Performance Statistics</h2>
@@ -168,7 +205,6 @@
 					</div>
 					<div id="btnssh">
 						<button type="button" class="btnsh">Current</button>
-						<button type="button" class="btnsh">Your Bids</button>
 					</div>
 					<div class="shdiv">
 						<img src="assets/package (1).svg" class="shimg" />
@@ -215,6 +251,35 @@
 					</div>
 				</div>
 			</div>
+			<div id="bankacheive">
+				<div id="bankdetails">
+					<div class="contentdiv">
+					  <h3 class="contentheading">Bank Details</h3>
+					  <img src="">
+					  </div>
+					  <form class="contentform" method="post" action="/saveBanking">
+						  <label for="accountholder">Account Holder Name</label>
+						  <input type="text" id="accountholder" name="AccountHolder" placeholder="Joey" >
+						  <br>
+						  <label for="bankname">Bank Name</label>
+						  <input type="text" id="bankname" name="BankName" placeholder="HDFC" >
+						  <br>
+						   <label for="">Account Number</label>
+						   <input type="number" id="accountnumber" name="AccountNumber" placeholder="9865452211223">
+						   <br>
+						  <label for="ifsc">IFSC Code</label>
+						  <input type="number" id="ifsc" name="IFSC" placeholder="xxxxxxxxxxxxxxxx">
+						  <br>
+						  <label for="upi">UPI Id</label>
+						  <input type="text" id="upi" name="UPI" placeholder="">
+						  <br>
+						  <button id="bankdetailsbtn" type="submit" >Submit Details</button>
+					  </form>
+					</div>
+				</div>
+		</div>
+		<!-- to change -->
+		 <div id="bottomer">
 			<div id="achievements">
 				<h2>Achievements</h2>
 				<div id="achievementsflex">
@@ -244,7 +309,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 		<div class="contents">
 			<div class="contentdiv">
 				<h3 class="contentheading">Reviews</h3>
@@ -255,33 +319,36 @@
 				reviews)
 			</div>
 			<div id="reviewsContainer"></div>
-		</div>	
-    <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('/showShipperDetails')
-                .then((response) => response.json())
-                .then((data) => {
-                    document.getElementById('overallRating').textContent =
-                        data.shipperRating || 'N/A';
-                    document.getElementById('ratingCount').textContent =
-                        data.shipperRatingCount || '0';
-                })
-                .catch((error) => {
-                    console.error('Error fetching shipper details:', error);
-                });
-    
-            fetch('/getShipperReviews')
-                .then((response) => response.json())
-                .then((reviews) => {
-                    const reviewsContainer = document.getElementById('reviewsContainer');
-                    if (reviews.length === 0) {
-                        reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
-                    } else {
-                        reviews.forEach((review) => {
-                            const reviewDiv = document.createElement('div');
-                            reviewDiv.classList.add('review');
-                            reviewDiv.innerHTML = `
+		</div>
+	</div>
+		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+		<script src="js/shipperdashboard.js"></script>
+		 <script>
+			document.addEventListener('DOMContentLoaded', () => {
+				fetch('/showShipperDetails')
+					.then((response) => response.json())
+					.then((data) => {
+						document.getElementById('overallRating').textContent =
+							data.shipperRating || 'N/A';
+						document.getElementById('ratingCount').textContent =
+							data.shipperRatingCount || '0';
+					})
+					.catch((error) => {
+						console.error('Error fetching shipper details:', error);
+					});
+
+				fetch('/getShipperReviews')
+					.then((response) => response.json())
+					.then((reviews) => {
+						const reviewsContainer =
+							document.getElementById('reviewsContainer');
+						if (reviews.length === 0) {
+							reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
+						} else {
+							reviews.forEach((review) => {
+								const reviewDiv = document.createElement('div');
+								reviewDiv.classList.add('review');
+								reviewDiv.innerHTML = `
                   <div class="review-rating">
                     Rating: ${'⭐'.repeat(review.rating)}
                   </div>
@@ -292,14 +359,14 @@
                     ${new Date(review.date).toLocaleDateString()}
                   </div>
                 `;
-                            reviewsContainer.appendChild(reviewDiv);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error fetching reviews:', error);
-                });
-        });
-    </script>
-    </body>
+								reviewsContainer.appendChild(reviewDiv);
+							});
+						}
+					})
+					.catch((error) => {
+						console.error('Error fetching reviews:', error);
+					});
+			});
+		</script>
+	</body>
 </html>

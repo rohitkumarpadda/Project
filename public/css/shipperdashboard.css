@@ -267,15 +267,41 @@ input {
 .earningobje h5 {
 	font-size: 1.1rem;
 }
-
+#bankdetails{
+	margin:1rem;
+    background-color: white;
+	box-shadow:0 0 10px 0 rgb(146,144,145);
+	padding:0.5rem 2rem;
+	border-radius: 15px;
+	width:80%;
+	padding-bottom:2rem;
+}
+#bottomer{
+	display:flex;
+	justify-content:space-between;
+}
+#bankacheive{
+	display:flex;
+	justify-content: center;
+}
+#bankdetailsbtn{
+	background-color: #0284c7;
+	height:2rem;
+	color:white;
+	font-size:1.2rem;
+	border-radius:10px;
+}
+#bankdetailsbtn:hover{
+	background-color: #0369a1;
+}
 #achievements {
-	padding: 0.2rem 1rem;
+	padding:2rem;
 	margin: 1rem 1rem;
 	background-color: white;
-	width: 27vw;
+	/* width: 27vw; */
 	box-shadow: 0 0 5px 0 rgb(145, 143, 143);
 	border-radius: 15px;
-	margin-left: 36vw;
+	width:40%;
 }
 #achievementsflex {
 	display: flex;
