@@ -15,6 +15,8 @@ const loginDataSchema = new mongoose.Schema({
 	type: { type: String, required: true },
 	userId: { type: String, required: true, unique: true },
 	address: { type: String },
+	profilePic: { type: String },
+	phoneNumber: { type: String, },
 });
 
 const LoginData = mongoose.model('LoginData', loginDataSchema);
