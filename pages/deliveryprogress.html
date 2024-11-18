@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Delivery Progress</title>
+		<link rel="stylesheet" href="css/deliveryprogress.css" />
+		<link rel="icon" href="assets/ship2.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="/" id="a1" class="starti">Home</a></div>
+				<div class="start">
+					<a href="" id="a2" class="starti">How It Works</a>
+				</div>
+				<div class="start">
+					<a href="/about" id="a3" class="starti">About Us</a>
+				</div>
+				<div class="start">
+					<a href="/contact" id="a4" class="starti">Contact</a>
+				</div>
+			</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+			</div>
+		</div>
+		<div id="dcmain">
+			<div id="dcmfirst">
+				<div class="dcheadings">
+					<img src="assets/package (1).svg" />
+					<h2>Shipment Details</h2>
+				</div>
+				<div id="dcmainbody">
+					<div id="status">
+						<p id="statusheading">Status:</p>
+						<p id="state">In Progress</p>
+					</div>
+					<div id="dcspecifications">
+						<div class="dcaboutshipment">
+							<div class="dcaboutshipmentitem">
+								<h3>Origin</h3>
+								<p id="originAddress">Address</p>
+							</div>
+							<div class="dcaboutshipmentitem">
+								<h3>Weight</h3>
+								<p id="weight">15Kg</p>
+							</div>
+							<div class="dcaboutshipmentitem">
+								<h3>Price</h3>
+								<p id="price">₹20,000</p>
+							</div>
+						</div>
+						<div class="dcaboutshipment">
+							<div class="dcaboutshipmentitem">
+								<h3>Delivered On</h3>
+								<p id="deliveredOn">2023-05-25</p>
+							</div>
+							<div class="dcaboutshipmentitem">
+								<h3>Destination</h3>
+								<p id="destinationAddress">To Address</p>
+							</div>
+							<div class="dcaboutshipmentitem">
+								<h3>Dimensions</h3>
+								<p id="dimensions">50cm * 30cm * 20cm</p>
+							</div>
+						</div>
+					</div>
+					<div id="dcdescription">
+						<h3>Description</h3>
+						<p id="description">
+							Electronics equipment - fragile, handle with care
+						</p>
+					</div>
+				</div>
+			</div>
+			<div id="dcmsecond">
+				<!-- Current Bidders Section -->
+				<div class="dcmseconditem" id="currentBidders" style="display: none">
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<h2>Current Bidders</h2>
+					</div>
+					<div class="bodyrender" id="biddersContainer">
+						<!-- Bidders will be loaded here -->
+					</div>
+				</div>
+				<!-- Shipper Information Section -->
+				<div
+					class="dcmseconditem"
+					id="shipperinformationdeliveryprogress"
+					style="display: none"
+				>
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<h2>Shipper Information</h2>
+					</div>
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<p id="shipperName">Shipper Name</p>
+					</div>
+					<div class="dcheadings">
+						<img src="assets/star.svg" />
+						<p id="shipperRating">⭐4.5</p>
+					</div>
+					<div class="dcheadings">
+						<img src="assets/truck.svg" />
+						<p id="shipperDeliveries">125 Deliveries</p>
+					</div>
+				</div>
+				<div
+					class="dcmseconditem"
+					id="paymentdeliveryprogress"
+					style="display: none"
+				>
+					<div class="dcheadings">
+						<img src="assets/indian-rupee.svg" />
+						<h2>Payment</h2>
+					</div>
+					<div id="paymentdiv">
+						<div class="paymentcontent">
+							<p>Shipping Cost:</p>
+							<h3 id="shippingCost">₹12000</h3>
+						</div>
+						<div class="paymentcontent">
+							<p>Taxes(10%):</p>
+							<h3 id="taxes">₹1200</h3>
+						</div>
+						<div class="paymentcontent">
+							<h3>Total:</h3>
+							<h3 id="totalAmount">₹13200</h3>
+						</div>
+					</div>
+					<div id="paymentbtns">
+						<button class="paymentbtn" id="makePaymentBtn">Make Payment</button>
+						<button class="paymentbtn" id="cancelShipmentBtn">
+							Cancel Shipment
+						</button>
+					</div>
+				</div>
+				<div class="dcbottomer" id="communicationdeliveryprogress">
+					<div class="dcbottom">
+						<div class="dcheadings">
+							<img src="assets/message-circle-question.svg" />
+							<h2>Communication with Shipper</h2>
+						</div>
+						<div id="inputflex">
+							<input
+								type="text"
+								placeholder="Type your message"
+								name="message"
+							/>
+							<button type="button">
+								<img src="assets/send.svg" id="messagebtn" />
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Razorpay Checkout Script -->
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+		<script src="js/deliveryprogress.js"></script>
+	</body>
+</html>
