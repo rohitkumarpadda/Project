@@ -1,197 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shipper DashBoard</title>
-    <link rel="stylesheet" href="css/shipperdashboard.css">
-    <link rel="icon" href="assets/ship.svg">
-</head>
-<body>
-    <div class="header">
-        <img src="assets/ship2.svg" class="shipimg">
-        <div id="heading" class="start">ShipIt</div>
-        <div id="middle">
-        <div  class="start"><a href="/" id="a1" class="starti">Home</a></div>
-        <div  class="start"><a href="" id="a2"class="starti">How It Works</a></div>
-        <div  class="start"><a href="/about" id="a3" class="starti">About Us</a></div> 
-        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
-        <div  class="start"></div>
-        </div>
-        <div id="right">
-        <button id="modebtn"><img src="assets/moon.svg" class="mode"></button>
-        </div>
-     </div>
-     <div id="body">
-     <div id="headercontainer">
-        <h2 id="mainheading">Shipper DashBoard</h2>
-        <button type="button" id="newshipbtn">New Shippment</button>
-     </div>
-     <div class="bodycontents">
-        <div class="contents">
-            <div class="contentdiv">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Shipper DashBoard</title>
+		<link rel="stylesheet" href="css/shipperdashboard.css" />
+		<link rel="icon" href="assets/ship.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="/" id="a1" class="starti">Home</a></div>
+				<div class="start">
+					<a href="" id="a2" class="starti">How It Works</a>
+				</div>
+				<div class="start">
+					<a href="/about" id="a3" class="starti">About Us</a>
+				</div>
+				<div class="start"><a href="" id="a4" class="starti">Contact</a></div>
+				<div class="start"></div>
+			</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+				<a href="/logout"><img src="assets/log-out.svg" class="mode" /></a>
+			</div>
+		</div>
+		<div id="body">
+			<div id="headercontainer">
+				<h2 id="mainheading">Shipper DashBoard</h2>
+				<button
+					type="button"
+					id="newshipbtn"
+					onclick="
+            const urlparams=new URLSearchParams(window.location.search);
+            const shipper=urlparams.get('userId');
+            window.location.href=`/selectOrder?Id=${shipper}`;
+        "
+				>
+					New Shippment
+				</button>
+			</div>
+			<div class="bodycontents">
+				<div class="contents" id="fetchProfile">
+					<script>
+						document.addEventListener('DOMContentLoaded', () => {
+							fetch('/showShipperDetails')
+								.then((response) => response.json())
+								.then((data) => {
+									displayProfile(data);
+								});
+							const fetchProfile = document.getElementById('fetchProfile');
+							function displayProfile(data) {
+								fetchProfile.innerHTML = `<div class="contentdiv">
             <h3 class="contentheading">Profile Details</h3>
             <img src="">
             </div>
             <div id="profiledet">
                 <img src="assets/user.svg">
                 <div id="username">
-                    <h3 id="userheading">John Doe</h3>
-                    <p>John.doe@example.com</p>
+                    <h3 id="userheading">${data.fullname}</h3>
+                    <p>${data.email}</p>
                 </div>
             </div>
             <form class="contentform">
                 <label for="company">Company</label>
-                <input type="text" id="company" name="company" placeholder="Sppedy Logistics">
+                <input type="text" id="company" name="company" placeholder="${data.companyAddress}" disabled>
                 <br>
                 <label for="phonenumber">Phone Number</label>
-                <input type="number" id="phonenumber" name="phonenumber" placeholder="88545 55102">
+                <input type="number" id="phonenumber" name="phonenumber" placeholder="${data.phoneNumber}" disabled>
                 <br>
                 <label for="address">Address</label>
-                <input type="text" id="address" name="address" placeholder="Dombivili Bombay">
+                <input type="text" id="address" name="address" placeholder="${data.personalAddress}" disabled>
                 <br>
-            </form>
-        </div>
-        <div class="contents">
-            <div class="contentdiv">
+            </form>`;
+							}
+						});
+					</script>
+				</div>
+				<div class="contents" id="fetchVehicle">
+					<script>
+						document.addEventListener('DOMContentLoaded', () => {
+							fetch('/showShipperDetails')
+								.then((response) => response.json())
+								.then((data) => {
+									displayVehicle(data);
+								});
+
+							const fetchVehicle = document.getElementById('fetchVehicle');
+							function displayVehicle(data) {
+								fetchVehicle.innerHTML = `  <div class="contentdiv">
             <h3 class="contentheading">Vechile Details</h3>
             <img src="">
             </div>
             <form class="contentform">
                 <label for="Vechiletype">Vechile Type</label>
-                <input type="text" id="vechiletype" name="vechiletype" placeholder="Semi Truck">
+                <input type="text" id="vechiletype" name="vechiletype" placeholder="${data.vehicleClass}" disabled
                 <br>
-                <label for="licenseplate">License Plate</label>
-                <input type="text" id="licenseplate" name="licenseplate" placeholder="ABC 1234">
+                <label for="licenseplate">Vehicle Model</label>
+                <input type="text" id="licenseplate" name="licenseplate" placeholder="${data.vehicleModel}" disabled>
                 <br>
                 <label for="capacity">Capacity</label>
-                <input type="text" id="capacity" name="capacity" placeholder="40,000 lbs">
+                <input type="text" id="capacity" name="capacity" placeholder="${data.capacity} kgs" disabled>
                 <br>
-            </form>
-        </div>
-        <div class="contents">
-            <div class="contentdiv">
-            <h3 class="contentheading">Profile Details</h3>
-            <img src="">
-            </div>
-            <!-- star's -->
-           <div id="rating"><img src="assets/star.svg">
-             4.8(124 reviews)
-         </div>
-         <div class="ratingthings">
-            <p>Punctuality</p>    
-            <h4> -58%</h4>
-         </div>
-            <div class="ratingthings">
-            <p>Communication</p>    
-            <h4> -70%</h4>
-         </div>
-          <div class="ratingthings">
-            <p>Professionalism</p>    
-            <h4> -85%</h4>
-         </div>
-        
-        </div>
-     </div>
-     <div id="wholeps">
-     <h2>Performance Statistics</h2>
-     <div id="performancestatistics">
-        <div class="pscontents" style="background-color:rgb(149, 240, 149);">
-            <img src="assets/clock.svg">
-            <div class="pscontext">
-                <p class="pspara" style="color:green">On time delivery rate</p>
-                <h2>98.5%</h2>
-            </div>
-        </div>
-        <div class="pscontents" style="background-color:rgb(154, 200, 244);">
-            <img src="assets/truck.svg">
-            <div class="pscontext">
-                <p class="pspara" style="color:rgb(0, 183, 255)">Average  delivery time</p>
-                <h2>2.3 days</h2>
-            </div>
-        </div>
-        <div class="pscontents" style="background-color:rgb(244, 144, 244) ;">
-            <img src="assets/map-pin (1).svg">
-            <div class="pscontext">
-                <p class="pspara" style="color:purple">Total distance covered</p>
-                <h2>15,230 km</h2>
-            </div>
-        </div>
-     </div>
-      </div>
-      <div class="bodycontents">
-        <div id="twocontents">
-            <div class="contentdiv">
-            <h2 >Shipment History</h2>
-            </div>
-            <div id="btnssh">
-                <button type="button" class="btnsh">Current</button>
-                <button type="button" class="btnsh">Past</button>
-            </div>
-             <div class="shdiv">
-            <img src="assets/package (1).svg" class="shimg">
-            <div class="shcontext">
-                <h3>Shipment #1001</h3>
-                <p class="shpara">In Transit: Due in 2 days</p>
-            </div>
-             </div>
+            </form>`;
+							}
+						});
+					</script>
+				</div>
+				<div class="contents">
+					<div class="contentdiv">
+						<h3 class="contentheading">Profile Details</h3>
+						<img src="" />
+					</div>
+					<!-- star's -->
+					<div id="rating">
+						<img src="assets/star.svg" />
+						4.8(124 reviews)
+					</div>
+					<div class="ratingthings">
+						<p>Punctuality</p>
+						<h4>-58%</h4>
+					</div>
+					<div class="ratingthings">
+						<p>Communication</p>
+						<h4>-70%</h4>
+					</div>
+					<div class="ratingthings">
+						<p>Professionalism</p>
+						<h4>-85%</h4>
+					</div>
+				</div>
+			</div>
+			<div id="wholeps">
+				<h2>Performance Statistics</h2>
+				<div id="performancestatistics">
+					<div class="pscontents" style="background-color: rgb(149, 240, 149)">
+						<img src="assets/clock.svg" />
+						<div class="pscontext">
+							<p class="pspara" style="color: green">On time delivery rate</p>
+							<h2>98.5%</h2>
+						</div>
+					</div>
+					<div class="pscontents" style="background-color: rgb(154, 200, 244)">
+						<img src="assets/truck.svg" />
+						<div class="pscontext">
+							<p class="pspara" style="color: rgb(0, 183, 255)">
+								Average delivery time
+							</p>
+							<h2>2.3 days</h2>
+						</div>
+					</div>
+					<div class="pscontents" style="background-color: rgb(244, 144, 244)">
+						<img src="assets/map-pin (1).svg" />
+						<div class="pscontext">
+							<p class="pspara" style="color: purple">Total distance covered</p>
+							<h2>15,230 km</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="bodycontents">
+				<div id="twocontents">
+					<div class="contentdiv">
+						<h2>Shipment History</h2>
+					</div>
+					<div id="btnssh">
+						<button type="button" class="btnsh">Current</button>
+						<button type="button" class="btnsh">Your Bids</button>
+					</div>
+					<div class="shdiv">
+						<img src="assets/package (1).svg" class="shimg" />
+						<div class="shcontext">
+							<h3>Shipment #1001</h3>
+							<p class="shpara">In Transit: Due in 2 days</p>
+						</div>
+					</div>
 
-              <div class="shdiv">
-            <img src="assets/package (1).svg">
-            <div class="shcontext">
-                <h3>Shipment #1001</h3>
-                <p class="shpara">In Transit: Due in 2 days</p>
-            </div>
-             </div>
+					<div class="shdiv">
+						<img src="assets/package (1).svg" />
+						<div class="shcontext">
+							<h3>Shipment #1001</h3>
+							<p class="shpara">In Transit: Due in 2 days</p>
+						</div>
+					</div>
 
-              <div class="shdiv">
-            <img src="assets/package (1).svg">
-            <div class="shcontext">
-                <h3>Shipment #1001</h3>
-                <p class="shpara">In Transit: Due in 2 days</p>
-            </div>
-             </div>
+					<div class="shdiv">
+						<img src="assets/package (1).svg" />
+						<div class="shcontext">
+							<h3>Shipment #1001</h3>
+							<p class="shpara">In Transit: Due in 2 days</p>
+						</div>
+					</div>
+				</div>
 
-        </div>
-        
-        <div class="contents">
-            <div class="contentdiv">
-            <h2>Earnings</h2>
-            </div>
-            <div id="earningsmoney">
-                <img src="assets/indian-rupee.svg">
-                <h3>1,00,450</h3>
-                <p>Total earnings this month</p>
-            </div>
-            <!-- star's -->
-            <div class="earningobje">
-                <p>Completed Shipments</p>
-                <h5>18</h5>
-            </div>
-            <div class="earningobje">
-                <p>Average Earnings/Shipment</p>
-                <h5>6910</h5>
-            </div>
-        </div>
-     </div>
-     <div id="achievements">
-        <h2>Achievements</h2>
-        <div id="achievementsflex">
-            <div class="achievecontents">
-                <img src="assets/award.svg" class="achievecontent" style="background-color: rgb(224, 231, 23);">
-                <p class="achievepara">Top Rated</p>
-            </div>
-            <div class="achievecontents">
-                <img src="assets/truck.svg" class="achievecontent" style="background-color: rgb(89, 188, 233);">
-                <p class="achievepara">100 Deliveries</p>
-            </div>
-            <div class="achievecontents">
-                <img src="assets/indian-rupee.svg" class="achievecontent" style="background-color: greenyellow;">
-                <p class="achievepara">High Earner</p>
-            </div>
-        </div>
-     </div>
-     </div>
-     <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
-</body>
+				<div class="contents">
+					<div class="contentdiv">
+						<h2>Earnings</h2>
+					</div>
+					<div id="earningsmoney">
+						<img src="assets/indian-rupee.svg" />
+						<h3>1,00,450</h3>
+						<p>Total earnings this month</p>
+					</div>
+					<!-- star's -->
+					<div class="earningobje">
+						<p>Completed Shipments</p>
+						<h5>18</h5>
+					</div>
+					<div class="earningobje">
+						<p>Average Earnings/Shipment</p>
+						<h5>6910</h5>
+					</div>
+				</div>
+			</div>
+			<div id="achievements">
+				<h2>Achievements</h2>
+				<div id="achievementsflex">
+					<div class="achievecontents">
+						<img
+							src="assets/award.svg"
+							class="achievecontent"
+							style="background-color: rgb(224, 231, 23)"
+						/>
+						<p class="achievepara">Top Rated</p>
+					</div>
+					<div class="achievecontents">
+						<img
+							src="assets/truck.svg"
+							class="achievecontent"
+							style="background-color: rgb(89, 188, 233)"
+						/>
+						<p class="achievepara">100 Deliveries</p>
+					</div>
+					<div class="achievecontents">
+						<img
+							src="assets/indian-rupee.svg"
+							class="achievecontent"
+							style="background-color: greenyellow"
+						/>
+						<p class="achievepara">High Earner</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="contents">
+			<div class="contentdiv">
+				<h3 class="contentheading">Reviews</h3>
+			</div>
+			<div id="rating">
+				<img src="assets/star.svg" />
+				<span id="overallRating">N/A</span> (<span id="ratingCount">0</span>
+				reviews)
+			</div>
+			<div id="reviewsContainer"></div>
+		</div>	
+    <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/showShipperDetails')
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById('overallRating').textContent =
+                        data.shipperRating || 'N/A';
+                    document.getElementById('ratingCount').textContent =
+                        data.shipperRatingCount || '0';
+                })
+                .catch((error) => {
+                    console.error('Error fetching shipper details:', error);
+                });
+    
+            fetch('/getShipperReviews')
+                .then((response) => response.json())
+                .then((reviews) => {
+                    const reviewsContainer = document.getElementById('reviewsContainer');
+                    if (reviews.length === 0) {
+                        reviewsContainer.innerHTML = '<p>No reviews yet.</p>';
+                    } else {
+                        reviews.forEach((review) => {
+                            const reviewDiv = document.createElement('div');
+                            reviewDiv.classList.add('review');
+                            reviewDiv.innerHTML = `
+                  <div class="review-rating">
+                    Rating: ${'⭐'.repeat(review.rating)}
+                  </div>
+                  <div class="review-text">
+                    "${review.review}"
+                  </div>
+                  <div class="review-date">
+                    ${new Date(review.date).toLocaleDateString()}
+                  </div>
+                `;
+                            reviewsContainer.appendChild(reviewDiv);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching reviews:', error);
+                });
+        });
+    </script>
+    </body>
 </html>
