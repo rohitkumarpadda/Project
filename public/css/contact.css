@@ -1,0 +1,211 @@
+body{
+    height:100vh;
+    /* background-color:rgba(230, 234, 238, 0.953); */
+     font-family:Arial;
+}
+/* #0284C7 */
+.header{
+ display:flex;
+ position:relative;
+ /* background-color: aqua; */
+ height:3.75rem;
+}
+.shipimg{
+    height:3rem;
+}
+#heading{
+ font-size: 2rem;
+ font-weight:bold;
+ font-family:Arial;
+}
+.mode{
+    padding:0.4rem;
+}
+.mode:hover{
+      background-color: #f3f4f6;
+      border-radius:50%;
+}
+#modebtn{
+    border-radius:50%;
+    background-color: white;
+    border:0.1px solid white;
+}
+.start{
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  margin:0 0.5rem;
+  font-weight:500;
+}
+#middle{
+    display: flex;
+    position: relative;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+    left:8rem;
+}
+#right{
+    display:flex;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+}
+.starti{
+    text-decoration: none;
+    color:black;
+    transition:all 0.2s linear 0s;
+}
+.starti:hover{
+    color:#0369A1;
+    transform:translateY(-0.29rem);
+}
+#btn{
+    position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0.5rem 1.25rem;
+    border-width: 0px;
+    background-color: #0284C7;
+    color:aliceblue;
+    transition: all 0.2s linear;
+}
+#loginbtn{
+     position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0rem 1.25rem;
+    border-width: 0px;
+    background-color: #ffffff;
+}
+#loginbtn:hover{
+     z-index:0;
+     background-color: #f3f4f6;
+}
+#btn:hover{
+    z-index:0;
+    color:aliceblue;
+    background-color:#0369A1;
+}
+#body{
+    background-color:#F0F9FF;
+    margin-top:2rem;
+    position: relative;
+    padding:0.5rem 2rem;
+    align-content: center;
+    margin:0rem 6rem;
+    border-radius:1.2rem;
+}
+#bodymainheading{
+    text-align:center;
+    font-size:2rem;
+}
+.bodysideheading{
+    font-size:1.5rem;
+}
+#bodypara{
+    font-size:1.2rem;
+}
+.listbox{
+    display: flex;
+}
+.paralists{
+    margin-left:0.7rem;
+}
+.logo{
+    height:1.7rem;
+    margin-right:0.3rem;
+}
+.formlabel{
+    width:80vw;
+    height:2.5rem;
+}
+.pnt{
+    margin:1.1rem -0.5rem;
+}
+#textbox{
+     width:80vw;
+    height:10rem;
+}
+#tail{
+    background-color:#F0F9FF;
+    margin-top:1.7rem;
+    padding:0.9rem;
+    margin:2rem 6rem;
+    border-radius:1.2rem;
+    padding:2rem;
+    /* display:none; */
+}
+.questionitems{
+    margin:0.5rem 0rem;
+    cursor:pointer;
+}
+.discription{
+    display:none;   
+    font-size:1.2rem;
+    /* visibility hidden makes the space to be reserved but*/
+}
+.questionheading{
+   font-size: 1.4rem;
+}
+.subflex{
+    display:flex;
+}
+.arrow{
+    position:relative;
+    left:60vw;
+}
+input{
+    border:1px solid black;
+    color:black;
+}
+::placeholder{
+    color:black;
+}
+/* for the dom to add to the class list*/
+.newstyle::placeholder{
+    color:white;
+}
+#footer{
+    background-color: rgb(4, 4, 49);
+    height:3rem;
+    display: flex;
+    justify-content: center;
+    width:98.5vw;
+    border-top-right-radius:1.1rem;
+    border-top-left-radius:1.1rem;
+}
+#footerpara{
+    text-align: center;
+    font-size:1.2rem ;
+    color:aliceblue;
+}
+#submitrespnse{
+    height:2.1rem;
+    margin-top:0.9rem;
+    width:80.5vw;
+    background-color: #0284C7;
+    color:aliceblue;
+    border-radius:0.5rem;
+    font-size:1.2rem;
+    font-weight: 600;
+    font-family:arial;
+    margin-bottom:2rem;
+}
+#submitrespnse:hover{
+    border:1px solid white;
+    transform: scale(1);
+}

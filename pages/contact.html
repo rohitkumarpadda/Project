@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Contact Us</title>
+		<link rel="icon" type="image/x-icon" href="assets/ship2.svg" />
+		<link rel="stylesheet" href="css/contact.css" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="/" id="a1" class="starti">Home</a></div>
+				<div class="start">
+					<a href="" id="a2" class="starti">How It Works</a>
+				</div>
+				<div class="start">
+					<a href="/about" id="a3" class="starti">About Us</a>
+				</div>
+				<div class="start"><a href="" id="a4" class="starti">Contact</a></div>
+				<div class="start"></div>
+			</div>
+			<div id="right">
+				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
+			</div>
+		</div>
+		<div id="body">
+			<h2 id="bodymainheading">Contact Us</h2>
+			<h3 class="bodysideheading">Get in Touch</h3>
+			<p id="bodypara">
+				Have questions or need assistance? We're here to help. Fill out the
+				form, and we'll get back to you as soon as possible.
+			</p>
+			<div id="list">
+				<div class="listbox">
+					<img src="assets/mail.svg" />
+					<p class="paralists">--------------------</p>
+				</div>
+				<div class="listbox">
+					<img src="assets/phone.svg" />
+					<p class="paralists">------------------</p>
+				</div>
+				<div class="listbox">
+					<img src="assets/map-pin.svg" />
+					<p class="paralists">-----------------</p>
+				</div>
+				<div class="listbox">
+					<img src="assets/clock.svg" />
+					<p class="paralists">--------------------</p>
+				</div>
+			</div>
+			<h3 class="bodysideheading">Follow Us</h3>
+			<div id="logos">
+				<img src="assets/facebook.svg" class="logo" />
+				<img src="assets/instagram.svg" class="logo" />
+				<img src="assets/twitter.svg" class="logo" />
+				<img src="assets/linkedin.svg" class="logo" />
+			</div>
+			<h3 class="bodysideheading">Our Location</h3>
+			<div class="locationimg"></div>
+			<!-- need to add here ! -->
+			<form action="/contact" method="post">
+				<input
+					type="text"
+					id="name"
+					name="Name"
+					placeholder="   Your Name"
+					class="formlabel"
+				/>
+				<br />
+				<br />
+				<input
+					type="email"
+					id="email"
+					name="Email"
+					placeholder="   Your Email"
+					class="formlabel"
+				/>
+				<br />
+				<br />
+				<input
+					type="number"
+					id="phonenumber"
+					name="Phno"
+					placeholder="   Your Number"
+					class="formlabel"
+				/>
+				<ul id="ullist">
+					<li class="pnt">Select a topic</li>
+					<label for="Value">
+						<input type="radio" name="Value" value="General Inquiry"/>General Inquiry</label
+					>
+                    <label for="Value">
+						<input type="radio" name="Value" value="Customer Support"/>Customer Support</label
+					>
+                    <label for="Value">
+						<input type="radio" name="Value" value="Billing Question" />Billing Question</label
+					>
+                    <label for="Value">
+						<input type="radio" name="Value" value="Partnership Oppurtunity"/>Partnership Oppurtunity</label
+					>
+				</ul>
+				<input
+					type="text"
+					id="subject"
+					name="Subject"
+					placeholder="   subject"
+					class="formlabel"
+				/>
+				<br />
+				<br />
+				<input
+					type="text"
+					id="textbox"
+					name="Textbox"
+					placeholder="   Your Message"
+					class="formlabel"
+				/>
+				<br />
+				<button type="submit" id="submitrespnse">Submit Response</button>
+			</form>
+		</div>
+		<div id="tail">
+			<h2 id="tailmainheading">Frequently Asked Questions</h2>
+
+			<div class="questionitems">
+				<div class="subflex">
+					<img src="assets/message-circle-question.svg" class="questionmark" />
+					<div class="questionheading">How does ShipIt work?</div>
+					<!-- <img src="arrow-big-down.svg" class="arrow"> -->
+				</div>
+				<div class="discription">
+					<p class="disc">
+						ShipIt connects customers with individual shippers through an
+						innovative bidding system. Customers post their shipment details,
+						and verified shippers place competitive bids. Customers then choose
+						the best offer for their needs
+					</p>
+				</div>
+			</div>
+			<hr />
+			<div class="questionitems">
+				<div class="subflex">
+					<img src="assets/message-circle-question.svg" class="questionmark" />
+					<div class="questionheading">
+						How do I become a shipper on ShipIt?
+					</div>
+					<!-- <img src="arrow-big-down.svg" class="arrow"> -->
+				</div>
+				<div class="discription">
+					<p class="disc">
+						To become a shipper on ShipIt, you need to sign up for an account,
+						complete our verification process, and agree to our terms of
+						service. Once approved, you can start bidding on available
+						shipments.
+					</p>
+				</div>
+			</div>
+			<hr />
+			<div class="questionitems">
+				<div class="subflex">
+					<img src="assets/message-circle-question.svg" class="questionmark" />
+					<div class="questionheading">Is my payment secure?</div>
+					<!-- <img src="arrow-big-down.svg" class="arrow"> -->
+				</div>
+				<div class="discription">
+					<p class="disc">
+						Yes, all payments on ShipIt are secure. We use industry-standard
+						encryption and secure payment gateways to ensure your financial
+						information is protected.
+					</p>
+				</div>
+			</div>
+		</div>
+		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+		<script src="js/contact.js"></script>
+	</body>
+</html>
