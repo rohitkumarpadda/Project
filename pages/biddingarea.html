@@ -35,7 +35,7 @@
 							<p>Pickup: <span id="pickupLocation"></span></p>
 						</div>
 						<div class="divitemsc">
-							<img src="assets/calendar (1).svg" />
+							<img src="assets/calendar.svg" />
 							<p>Pickup Date: <span id="pickupDate"></span></p>
 						</div>
 					</div>
@@ -56,23 +56,22 @@
 					<!-- Images will be dynamically inserted here -->
 				</div>
 			</div>
-
-			<div id="sideflexdiv">
-				<div class="sideflex">
-					<h2 class="mainheading">Bidding Information</h2>
-					<div class="sideflexitem">
-						<p>Current Highest Bid:</p>
-						<h4 id="highestBid">₹0</h4>
-					</div>
-					<div class="sideflexitem">
-						<p>Time Left:</p>
-						<h4 id="timeLeft">-</h4>
-					</div>
-					<div class="sideflexitem">
-						<p>Number of Bidders:</p>
-						<h4 id="numberOfBidders">0</h4>
-					</div>
+        <div id="sidefllexdiv">
+			<div class="sideflex">
+				<h2 class="mainheading">Bidding Information</h2>
+				<div class="sideflexitem">
+				  <p>Current Best Price:</p>
+				  <h4 id="bestBid">₹0</h4>
 				</div>
+				<div class="sideflexitem">
+				  <p>Time Left:</p>
+				  <h4 id="timeLeft">-</h4>
+				</div>
+				<div class="sideflexitem">
+				  <p>Number of Bidders:</p>
+				  <h4 id="numberOfBidders">0</h4>
+				</div>
+			  </div>
 				<div class="sideflex">
 					<h2 class="mainheading">Place Your Bid</h2>
 					<form id="bidForm">
@@ -93,8 +92,7 @@
 				</div>
 			</div>
 		</div>
-
-		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+		<div id="footer"><p id="footerpara">&#169; ShipIt.All rights reserved</p></div>
 		<script src="js/biddingarea.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
