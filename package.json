@@ -37,6 +37,7 @@
     "path": "^0.12.7",
     "qs": "^6.13.0",
     "razorpay": "^2.9.5",
-    "se_project": "file:"
+    "se_project": "file:",
+    "socket.io": "^4.8.1"
   }
 }
