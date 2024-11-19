@@ -1,0 +1,287 @@
+body{
+    height:100vh;
+    /* background-color:rgba(230, 234, 238, 0.953); */
+     font-family:Arial;
+}
+/* #0284C7 */
+.header{
+ display:flex;
+ position:relative;
+ padding:0.5rem;
+}
+.shipimg{
+    height:3rem;
+}
+#heading{
+ font-size: 2rem;
+ font-weight:bold;
+ font-family:Arial;
+}
+.mode{
+    padding:0.4rem;
+}
+.mode:hover{
+      background-color: #f3f4f6;
+      border-radius:50%;
+}
+#modebtn{
+    border-radius:50%;
+    background-color: white;
+    border:0.1px solid white;
+}
+.start{
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  margin:0 0.5rem;
+  font-weight:500;
+}
+#middle{
+    display: flex;
+    position: relative;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+    left:8rem;
+}
+#right{
+    display:flex;
+    align-items:center;
+    justify-content:right;
+    width:100vw;
+}
+.starti{
+    text-decoration: none;
+    color:black;
+    transition:all 0.2s linear 0s;
+}
+.starti:hover{
+    color:#0369A1;
+    transform:translateY(-0.29rem);
+}
+#btn{
+    position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0.5rem 1.25rem;
+    border-width: 0px;
+    background-color: #0284C7;
+    color:aliceblue;
+    transition: all 0.2s linear;
+}
+#loginbtn{
+     position:relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:2.75rem;
+    font-family:Arial;
+    border-radius:2rem;
+    font-size: 1rem;
+    margin-left:0.5rem;
+    padding:0.5rem 1.25rem;
+    border-width: 0px;
+    background-color: #ffffff;
+}
+#loginbtn:hover{
+     z-index:0;
+     background-color: #f3f4f6;
+}
+/* .btn::after{
+    content: '';
+    position: absolute;
+    height: 120%;
+    width:110%;
+     background-color: #0284C7;
+    border-radius:2rem;
+    z-index:-1;
+} */
+#btn:hover{
+    z-index:0;
+    color:aliceblue;
+    background-color:#0369A1;
+}
+/* Container styling */
+/* General styles */
+.filter-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+}
+
+input[type="range"] {
+  width: 90%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 5px;
+  outline: none;
+  margin-right: 10px;
+  cursor: pointer;
+
+  /* Default background for the slider track */
+  background: linear-gradient(to right, #555 50%, #ddd 50%);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #555;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #555;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#sliderValue {
+  font-size: 14px;
+  color: #333;
+  min-width: 60px;
+  text-align: center;
+}
+#filter{
+    width:60%;
+    margin-left:22%;
+}
+#applyfilter{
+    border-radius:15px;
+    font-size:1.2rem;
+    padding:0.4rem 1.2rem;
+    background-color: #0284C7;
+    color:white;
+    font-weight:600;
+    margin-left:40%;
+}
+#applyfilter:hover{
+    background-color: #0369A1;
+    border:2px solid black;
+}
+/* ending of the silder bar*/
+
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f5f5f5;
+}
+
+.shipment-card {
+  background: rgb(226, 226, 226);
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius:15px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card-header .tag {
+  background: #eef3fc;
+  color:#0284C7;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.bid-info h3 {
+  color:#0284C7;
+  margin: 0;
+  font-size: 20px;
+}
+
+.bid-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.card-body p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.card-body i {
+  margin-right: 6px;
+  color: #888;
+}
+
+.card-footer {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.bid-button {
+  background:#0284C7;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.bid-button:hover {
+  background:#0369A1;
+}
+#body{
+    background-color:white;
+    padding:1rem 2rem;
+    margin:1rem 2rem;
+    border-radius:15px;
+    box-shadow:0 0 10px 0 rgb(107, 107, 107);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .shipment-card {
+    padding: 12px;
+  }
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .bid-info {
+    margin-top: 8px;
+  }
+}
