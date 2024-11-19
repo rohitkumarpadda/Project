@@ -82,22 +82,25 @@ function fetchBidders(bids) {
 		return;
 	}
 
-	bids.forEach((bid) => {
+	// Sort bids ascendingly by amount
+	const sortedBids = bids.sort((a, b) => a.amount - b.amount);
+
+	sortedBids.forEach((bid) => {
 		const bidCard = document.createElement('div');
 		bidCard.classList.add('card-body');
 		bidCard.innerHTML = `
-            <div class="card-bodyele">
-                <p>Shipper Name</p>
-                <p>${bid.shipperfullname}</p>
-            </div>
-            <div class="card-bodyele">
-                <p>Bid Amount</p>
-                <p>₹${bid.amount}</p>
-            </div>
-            <div class="card-footer">
-                <button class="bid-button" onclick="acceptBid('${bid.shipperId}', ${bid.amount})">Accept Bid</button>
-            </div>
-        `;
+		<div class="card-bodyele">
+		  <p>Shipper Name</p>
+		  <p>${bid.shipperfullname}</p>
+		</div>
+		<div class="card-bodyele">
+		  <p>Bid Amount</p>
+		  <p>₹${bid.amount}</p>
+		</div>
+		<div class="card-footer">
+		  <button class="bid-button" onclick="acceptBid('${bid.shipperId}', ${bid.amount})">Accept Bid</button>
+		</div>
+	  `;
 		biddersContainer.appendChild(bidCard);
 	});
 }
