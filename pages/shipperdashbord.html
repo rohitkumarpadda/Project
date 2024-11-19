@@ -30,17 +30,27 @@
 		<div id="body">
 			<div id="headercontainer">
 				<h2 id="mainheading">Shipper DashBoard</h2>
-				<button
-					type="button"
-					id="newshipbtn"
-					onclick="
+				<div id="headerbtns">
+					<button
+						type="button"
+						id="newshipbtn1"
+						onclick="const urlparams2=new URLSearchParams(window.location.search);
+            const shipper2=urlparams2.get('userId');window.location.href=`/mybids?shipperId${shipper2}`;"
+					>
+						My Bids
+					</button>
+					<button
+						type="button"
+						id="newshipbtn"
+						onclick="
             const urlparams=new URLSearchParams(window.location.search);
             const shipper=urlparams.get('userId');
             window.location.href=`/selectOrder?Id=${shipper}`;
         "
-				>
-					New Shippment
-				</button>
+					>
+						New Shippment
+					</button>
+				</div>
 			</div>
 			<div class="bodycontents">
 				<div class="contents" id="fetchProfile">
@@ -203,30 +213,12 @@
 					<div class="contentdiv">
 						<h2>Shipment History</h2>
 					</div>
-					<div id="btnssh">
-						<button type="button" class="btnsh">Current</button>
-					</div>
-					<div class="shdiv">
-						<img src="assets/package (1).svg" class="shimg" />
-						<div class="shcontext">
-							<h3>Shipment #1001</h3>
-							<p class="shpara">In Transit: Due in 2 days</p>
+					<div class="contents" id="currentShipments">
+						<div class="contentdiv">
+							<h2>Current Shipments In Transit</h2>
 						</div>
-					</div>
-
-					<div class="shdiv">
-						<img src="assets/package (1).svg" />
-						<div class="shcontext">
-							<h3>Shipment #1001</h3>
-							<p class="shpara">In Transit: Due in 2 days</p>
-						</div>
-					</div>
-
-					<div class="shdiv">
-						<img src="assets/package (1).svg" />
-						<div class="shcontext">
-							<h3>Shipment #1001</h3>
-							<p class="shpara">In Transit: Due in 2 days</p>
+						<div id="shipmentsContainer">
+							<!-- Shipments will be dynamically loaded here -->
 						</div>
 					</div>
 				</div>
@@ -254,32 +246,52 @@
 			<div id="bankacheive">
 				<div id="bankdetails">
 					<div class="contentdiv">
-					  <h3 class="contentheading">Bank Details</h3>
-					  <img src="">
-					  </div>
-					  <form class="contentform" method="post" action="/saveBanking">
-						  <label for="accountholder">Account Holder Name</label>
-						  <input type="text" id="accountholder" name="AccountHolder" placeholder="Joey" >
-						  <br>
-						  <label for="bankname">Bank Name</label>
-						  <input type="text" id="bankname" name="BankName" placeholder="HDFC" >
-						  <br>
-						   <label for="">Account Number</label>
-						   <input type="number" id="accountnumber" name="AccountNumber" placeholder="9865452211223">
-						   <br>
-						  <label for="ifsc">IFSC Code</label>
-						  <input type="number" id="ifsc" name="IFSC" placeholder="xxxxxxxxxxxxxxxx">
-						  <br>
-						  <label for="upi">UPI Id</label>
-						  <input type="text" id="upi" name="UPI" placeholder="">
-						  <br>
-						  <button id="bankdetailsbtn" type="submit" >Submit Details</button>
-					  </form>
+						<h3 class="contentheading">Bank Details</h3>
+						<img src="" />
 					</div>
+					<form class="contentform" method="post" action="/saveBanking">
+						<label for="accountholder">Account Holder Name</label>
+						<input
+							type="text"
+							id="accountholder"
+							name="AccountHolder"
+							placeholder="Joey"
+						/>
+						<br />
+						<label for="bankname">Bank Name</label>
+						<input
+							type="text"
+							id="bankname"
+							name="BankName"
+							placeholder="HDFC"
+						/>
+						<br />
+						<label for="">Account Number</label>
+						<input
+							type="number"
+							id="accountnumber"
+							name="AccountNumber"
+							placeholder="9865452211223"
+						/>
+						<br />
+						<label for="ifsc">IFSC Code</label>
+						<input
+							type="number"
+							id="ifsc"
+							name="IFSC"
+							placeholder="xxxxxxxxxxxxxxxx"
+						/>
+						<br />
+						<label for="upi">UPI Id</label>
+						<input type="text" id="upi" name="UPI" placeholder="" />
+						<br />
+						<button id="bankdetailsbtn" type="submit">Submit Details</button>
+					</form>
 				</div>
+			</div>
 		</div>
 		<!-- to change -->
-		 <div id="bottomer">
+		<div id="bottomer">
 			<div id="achievements">
 				<h2>Achievements</h2>
 				<div id="achievementsflex">
@@ -309,21 +321,23 @@
 					</div>
 				</div>
 			</div>
-		<div class="contents">
-			<div class="contentdiv">
-				<h3 class="contentheading">Reviews</h3>
+			<div class="contents" id="reviewbox">
+				<div class="contentdiv">
+					<h3 class="contentheading">Reviews</h3>
+				</div>
+				<div id="rating">
+					<img src="assets/star.svg" />
+					<span id="overallRating">N/A</span> (<span id="ratingCount">0</span>
+					reviews)
+				</div>
+				<div id="reviewsContainer"></div>
 			</div>
-			<div id="rating">
-				<img src="assets/star.svg" />
-				<span id="overallRating">N/A</span> (<span id="ratingCount">0</span>
-				reviews)
-			</div>
-			<div id="reviewsContainer"></div>
 		</div>
-	</div>
-		<div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
+		<div id="footer">
+			<p id="footerpara">&#169; ShipIt.All rights reserved</p>
+		</div>
 		<script src="js/shipperdashboard.js"></script>
-		 <script>
+		<script>
 			document.addEventListener('DOMContentLoaded', () => {
 				fetch('/showShipperDetails')
 					.then((response) => response.json())
@@ -367,6 +381,62 @@
 						console.error('Error fetching reviews:', error);
 					});
 			});
+		</script>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				fetchCurrentShipments();
+			});
+
+			function fetchCurrentShipments() {
+				fetch('/api/shipments/in-transit')
+					.then((response) => response.json())
+					.then((data) => {
+						console.log('Shipments:', data);
+						displayShipments(data);
+					});
+			}
+
+			function displayShipments(shipments) {
+				const container = document.getElementById('shipmentsContainer');
+				container.innerHTML = '';
+
+				if (shipments.length === 0) {
+					container.innerHTML = '<p>No shipments in transit currently.</p>';
+					return;
+				}
+
+				shipments.forEach((shipment) => {
+					const shipmentDiv = document.createElement('div');
+					shipmentDiv.classList.add('shdiv');
+					shipmentDiv.innerHTML = `
+                    <img src="assets/package (1).svg" class="shimg" />
+                    <div class="shcontext">
+                        <h3>Shipment #${shipment._id}</h3>
+                        <p class="shpara">In Transit: Due on ${formatDate(
+													shipment.deliveryDate
+												)}</p>
+                        <button class="viewPayoutBtn" data-order-id="${
+													shipment._id
+												}">View Payout</button>
+                    </div>
+                `;
+					container.appendChild(shipmentDiv);
+				});
+
+				// Add event listeners to 'View Payout' buttons
+				const payoutButtons = document.querySelectorAll('.viewPayoutBtn');
+				payoutButtons.forEach((button) => {
+					button.addEventListener('click', (e) => {
+						const orderId = e.target.getAttribute('data-order-id');
+						window.location.href = `/payout?orderId=${orderId}`;
+					});
+				});
+			}
+
+			function formatDate(dateStr) {
+				const date = new Date(dateStr);
+				return date.toLocaleDateString();
+			}
 		</script>
 	</body>
 </html>

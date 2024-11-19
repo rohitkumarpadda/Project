@@ -19,6 +19,9 @@ body {
 }
 .mode {
 	padding: 0.4rem;
+	background-color: white;
+	border: 0.1px solid white;
+	border-radius:50%;
 }
 .mode:hover {
 	background-color: #f3f4f6;
@@ -130,6 +133,22 @@ label {
 	font-size: 1.1rem;
 	font-weight: 500;
 }
+#haderbtns{
+	display:flex;
+	justify-content:space-between;
+}
+#newshipbtn1 {
+	background-color:white;
+	height: 2.5rem;
+	padding: 0 2rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color:black;
+	border-radius: 10px;
+}
+#newshipbtn1:hover {
+	background-color: #f3f4f6;
+}
 input {
 	padding: 0.5rem 1rem;
 	font-size: 1.1rem;
@@ -201,17 +220,34 @@ input {
 	margin-bottom: -1rem;
 }
 #twocontents {
-	background-color: white;
-	width: 62vw;
+	background-color:white;
+	width:80vw;
+	margin-right:1rem;
 	padding: 0.5rem 1rem;
 	border-radius: 10px;
 	box-shadow: 0 0 5px 0 rgb(145, 143, 143);
+}
+#reviewbox{
+	width:60%;
+	height:30vh;
+	margin-top:1rem;
+}
+#currentShipments{
+  width:90%;
+  height:60%;
 }
 #btnssh {
 	display: flex;
 	width: 60vw;
 	background-color: rgb(224, 224, 224);
 	padding: 0.2rem;
+}
+.viewPayoutBtn{
+	background-color: #0284c7;
+	color:white;
+	padding:0.2rem 1rem;
+	border-radius:10px;
+
 }
 .btnsh {
 	width: 35vw;
@@ -225,7 +261,7 @@ input {
 	border-radius: 10px;
 	padding: 1rem;
 	width: 58vw;
-	height: 7vh;
+	height: 11vh;
 	margin: 1rem 0rem;
 	background-color: rgb(224, 224, 224);
 }
