@@ -20,6 +20,7 @@ const orderData = require('./models/orderData');
 const ReviewData = require('./models/reviewData.js');
 const Contact = require('./models/contactModel.js');
 const ShipperBank = require('./models/shipperBanking.js');
+
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
 	useNewUrlParser: true,
@@ -38,7 +39,7 @@ app.use(
 
 //Rate limiter
 const limiter = ratelimit({
-	windowMs: 25 * 60 * 1000, // 10 minutes
+	windowMs: 1000 * 60 * 1000, // 10 minutes
 	max: 100,
 	message: 'Too many requests from this IP, please try again later.',
 });
@@ -324,6 +325,7 @@ app.get('/bidDetails', async (req, res) => {
 		if (!order) {
 			return res.status(404).send('Order not found');
 		}
+		order.Bids = order.Bids.sort((a, b) => a.amount - b.amount);
 		res.json(order);
 	} catch (error) {
 		console.error('Error fetching order details:', error);
@@ -397,6 +399,7 @@ app.post('/placeBid', isLoggedInAsShipper, async (req, res) => {
 			amount: amount,
 			createdAt: new Date(),
 		});
+		order.Bids.sort((a, b) => a.amount - b.amount);
 
 		await order.save();
 
@@ -419,7 +422,7 @@ app.post('/SignUp', async (req, res, next) => {
 			Verifypassword,
 			Address,
 		} = req.body;
-
+		
 		if (!passwordsMatch(Password, Verifypassword)) {
 			return sendAlert(
 				res,
@@ -1246,6 +1249,199 @@ app.post('/verifyPayment', async (req, res) => {
 		res
 			.status(400)
 			.json({ success: false, message: 'Invalid payment signature' });
+	}
+});
+
+app.get('/mybids', isLoggedInAsShipper, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/mybids.html'));
+});
+
+app.get('/payout', isLoggedInAsShipper, async (req, res) => {
+	res.sendFile(path.join(__dirname, 'pages/payoutpage.html'));
+});
+
+app.get('/api/shipments/in-transit', isLoggedInAsShipper, async (req, res) => {
+	const shipperId = req.session.user.userId;
+
+	try {
+		const shipments = await orderData
+			.find({
+				acceptedShipperId: shipperId,
+				status: 'In Transit',
+			})
+			.lean();
+		console.log(shipments);
+		res.json(shipments);
+	} catch (error) {
+		console.error('Error fetching in-transit shipments:', error);
+		res.status(500).json({ success: false, message: 'Internal Server Error' });
+	}
+});
+
+app.get('/api/order/details', isLoggedInAsShipper, async (req, res) => {
+	const { orderId } = req.query;
+
+	if (!orderId) {
+		return res
+			.status(400)
+			.json({ success: false, message: 'Order ID is required' });
+	}
+
+	try {
+		const order = await orderData.findById(orderId).lean();
+		if (!order) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Order not found' });
+		}
+
+		res.json({ success: true, order });
+	} catch (error) {
+		console.error('Error fetching order details:', error);
+		res.status(500).json({ success: false, message: 'Internal Server Error' });
+	}
+});
+
+app.get(
+	'/api/shipper/bankingDetails',
+	isLoggedInAsShipper,
+	async (req, res) => {
+		const { shipperId } = req.query;
+
+		if (!shipperId) {
+			return res
+				.status(400)
+				.json({ success: false, message: 'Shipper ID is required' });
+		}
+
+		try {
+			const bankingDetails = await ShipperBank.findOne({ shipperId }).lean();
+			if (!bankingDetails) {
+				return res
+					.status(404)
+					.json({ success: false, message: 'Banking details not found' });
+			}
+
+			res.json({ success: true, bankingDetails });
+		} catch (error) {
+			console.error('Error fetching banking details:', error);
+			res
+				.status(500)
+				.json({ success: false, message: 'Internal Server Error' });
+		}
+	}
+);
+
+app.post('/api/payout/initiate', isLoggedInAsShipper, async (req, res) => {
+	const { orderId } = req.body;
+	const shipperId = req.session.user.userId;
+
+	if (!orderId) {
+		return res
+			.status(400)
+			.json({ success: false, message: 'Order ID is required' });
+	}
+
+	try {
+		const order = await OrderData.findById(orderId);
+		if (!order) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Order not found' });
+		}
+
+		if (order.acceptedShipperId !== shipperId) {
+			return res.status(403).json({ success: false, message: 'Unauthorized' });
+		}
+
+		if (order.paymentStatus === 'Paid') {
+			return res.status(400).json({
+				success: false,
+				message: 'Payment already processed for this order.',
+			});
+		}
+
+		// Fetch the shipper's banking details
+		const bankingDetails = await ShipperBank.findOne({ shipperId });
+		if (!bankingDetails) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Banking details not found' });
+		}
+
+		// Initialize Razorpay Payouts
+		const razorpayPayout = new Razorpay({
+			key_id: process.env.RAZORPAY_KEY_ID,
+			key_secret: process.env.RAZORPAY_KEY_SECRET,
+		});
+
+		let payoutOptions;
+		if (bankingDetails.upiid) {
+			// Prefer UPI payout
+			payoutOptions = {
+				account_number: bankingDetails.upiid, // Assuming UPI ID as account_number for demonstration
+				amount: order.acceptedBidAmount * 100, // Amount in paise
+				currency: 'INR',
+				mode: 'upi',
+			};
+		} else {
+			// Else, bank transfer
+			payoutOptions = {
+				account_number: bankingDetails.accountNumber,
+				amount: order.acceptedBidAmount * 100, // Amount in paise
+				currency: 'INR',
+				mode: 'bank_transfer',
+				ifsc: bankingDetails.ifscCode,
+				name: bankingDetails.accountHolderName,
+			};
+		}
+
+		try {
+			const payout = await razorpayPayout.payouts.create(payoutOptions);
+
+			// Update order payment status
+			order.paymentStatus = 'Paid';
+			await order.save();
+
+			res.json({
+				success: true,
+				message: 'Payout initiated successfully.',
+				payout,
+			});
+		} catch (payoutError) {
+			console.error('Error initiating payout:', payoutError);
+			res
+				.status(500)
+				.json({ success: false, message: 'Error initiating payout.' });
+		}
+	} catch (error) {
+		console.error('Error initiating payout:', error);
+		res.status(500).json({ success: false, message: 'Internal Server Error' });
+	}
+});
+
+// In index.js
+
+app.get('/api/mybids', isLoggedInAsShipper, async (req, res) => {
+	try {
+		const shipperId = req.session.user.userId;
+
+		// Find all orders where the shipper has placed a bid
+		const orders = await orderData.find({ 'Bids.shipperId': shipperId }).lean();
+
+		// Filter bids in each order to include only the bids by this shipper
+		const ordersWithMyBids = orders.map((order) => {
+			const myBids = order.Bids.filter((bid) => bid.shipperId === shipperId);
+			return {
+				...order,
+				Bids: myBids,
+			};
+		});
+
+		res.json({ success: true, orders: ordersWithMyBids });
+	} catch (error) {
+		console.error('Error fetching my bids:', error);
+		res.status(500).json({ success: false, message: 'Internal Server Error' });
 	}
 });
 
