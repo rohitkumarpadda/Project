@@ -1180,11 +1180,15 @@ app.post('/saveBanking', isLoggedInAsShipper, async (req, res) => {
 		ShipperBank.updateOne(
 			{ shipperId: req.session.user.userId },
 			{
-				accountHolderName: AccountHolder,
-				accountNumber: AccountNumber,
-				ifscCode: IFSC,
-				bankName: BankName,
-				upiid: UPI,
+				accountHolderName: { $eq: AccountHolder },
+				accountNumber: {
+					$eq: AccountNumber,
+				},
+				ifscCode: {
+					$eq: IFSC,
+				},
+				bankName: { $eq: BankName },
+				upiid: { $eq: UPI },
 			}
 		);
 	}
