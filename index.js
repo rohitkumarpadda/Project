@@ -244,7 +244,7 @@ app.get('/contact', (req, res) => {
 app.post('/shipperSignIn', async (req, res) => {
 	const { Email, Password } = req.body;
 	console.log(req.body);
-	const shipper = await ShipperData.findOne({ email: Email });
+	const shipper = await ShipperData.findOne({ email: { $eq: Email } });
 	if (!shipper) {
 		return sendAlert(res, 'User not found', '/shipperSignIn');
 	}
@@ -321,7 +321,7 @@ app.get('/bidDetails', async (req, res) => {
 		return res.status(400).send('orderId is required');
 	}
 	try {
-		const order = await orderData.findById(orderId).lean();
+		const order = await orderData.findById({ _id: { $eq: orderId } }).lean();
 		if (!order) {
 			return res.status(404).send('Order not found');
 		}
@@ -348,7 +348,7 @@ app.get('/orderDetailsComplete', async (req, res) => {
 	}
 
 	try {
-		const order = await orderData.findById(orderId).lean();
+		const order = await orderData.findById({ _id: { $eq: orderId } }).lean();
 		if (!order) {
 			return res.status(404).json({ error: 'Order not found' });
 		}
@@ -366,7 +366,9 @@ app.get('/shipperDetailsComplete', async (req, res) => {
 	}
 
 	try {
-		const shipper = await ShipperData.findOne({ userId: shipperId }).lean();
+		const shipper = await ShipperData.findOne({
+			userId: { $q: shipperId },
+		}).lean();
 		if (!shipper) {
 			return res.status(404).json({ error: 'Shipper not found' });
 		}
@@ -994,7 +996,10 @@ app.post('/submitReview', isLoggedInAsuser, async (req, res) => {
 
 	try {
 		// Check if the review for this order by this user already exists
-		const existingReview = await ReviewData.findOne({ orderId, userId });
+		const existingReview = await ReviewData.findOne({
+			orderId: { $eq: orderId },
+			userId: { $eq: userId },
+		});
 		if (existingReview) {
 			return res.json({
 				success: false,
@@ -1003,7 +1008,7 @@ app.post('/submitReview', isLoggedInAsuser, async (req, res) => {
 		}
 
 		// Get the order details to verify the shipperId
-		const order = await orderData.findById(orderId);
+		const order = await orderData.findById({ _id: { $eq: orderId } });
 		if (!order) {
 			return res.json({ success: false, error: 'Order not found' });
 		}
@@ -1113,7 +1118,7 @@ app.get('/orderDetailsProgress', async (req, res) => {
 		return res.status(400).json({ error: 'Order ID is required' });
 	}
 	try {
-		const order = await orderData.findById(orderId).lean();
+		const order = await orderData.findById({ _id: { $eq: orderId } }).lean();
 		if (!order) {
 			return res.status(404).json({ error: 'Order not found' });
 		}
@@ -1171,7 +1176,7 @@ app.get('/shipperDetailsProgress', async (req, res) => {
 
 app.post('/saveBanking', isLoggedInAsShipper, async (req, res) => {
 	const { AccountHolder, AccountNumber, IFSC, BankName, UPI } = req.body;
-	if (ShipperBank.findOne({ shipperId: req.session.user.userId })) {
+	if (ShipperBank.findOne({ shipperId: { $eq: req.session.user.userId } })) {
 		ShipperBank.updateOne(
 			{ shipperId: req.session.user.userId },
 			{
@@ -1239,7 +1244,10 @@ app.post('/verifyPayment', async (req, res) => {
 	if (computed_signature === razorpay_signature) {
 		try {
 			// Update order payment status
-			await orderData.findByIdAndUpdate(orderId, { paymentStatus: 'Paid' });
+			await orderData.findByIdAndUpdate(
+				{ _id: { $eq: orderId } },
+				{ paymentStatus: 'Paid' }
+			);
 			res.json({ success: true });
 		} catch (error) {
 			console.error('Error updating payment status:', error);
