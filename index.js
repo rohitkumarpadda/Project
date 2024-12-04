@@ -134,16 +134,16 @@ function isOtpValid(user, otp) {
 	return user.otp === otp && Date.now() <= user.otpExpiry;
 }
 
+const transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASS,
+	},
+});
+
 // Send OTP email
 async function sendOtpEmail(email, otp) {
-	const transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.EMAIL_USER,
-			pass: process.env.EMAIL_PASS,
-		},
-	});
-
 	const mailOptions = {
 		from: process.env.EMAIL_USER,
 		to: email,
@@ -152,6 +152,25 @@ async function sendOtpEmail(email, otp) {
 	};
 
 	await transporter.sendMail(mailOptions);
+}
+
+// Function to send emails
+function sendEmail(to, subject, text, html) {
+	const mailOptions = {
+		from: process.env.EMAIL_USER,
+		to,
+		subject,
+		text,
+		html,
+	};
+
+	transporter.sendMail(mailOptions, function (error, info) {
+		if (error) {
+			console.error('Error sending email:', error);
+		} else {
+			console.log('Email sent:', info.response);
+		}
+	});
 }
 
 //Generate UserId(of 10 characters)
@@ -248,7 +267,7 @@ app.post('/shipperSignIn', async (req, res) => {
 	if (!shipper) {
 		return sendAlert(res, 'User not found', '/shipperSignIn');
 	}
-	const isMatch = await bcrypt.compare(Password, shipper.password);
+	const isMatch = bcrypt.compare(Password, shipper.password);
 	if (isMatch) {
 		shipper.lastlogin = new Date();
 		req.session.user = shipper;
@@ -388,22 +407,62 @@ app.post('/placeBid', isLoggedInAsShipper, async (req, res) => {
 	if (!orderId || !amount) {
 		return res.json({ success: false, message: 'Missing required fields' });
 	}
+
 	try {
 		const order = await orderData.findOne({ _id: { $eq: orderId } });
 		if (!order) {
 			return res.json({ success: false, message: 'Order not found' });
 		}
 
-		// Add the bid
-		order.Bids.push({
-			shipperId: shipperId,
-			shipperName: shipperName,
-			amount: amount,
-			createdAt: new Date(),
-		});
-		order.Bids.sort((a, b) => a.amount - b.amount);
+		const previousLowestBid = order.Bids.filter(
+			(bid) => bid.shipperId !== shipperId
+		).reduce((min, bid) => (bid.amount < min ? bid.amount : min), Infinity);
+
+		const isOutbidding = amount < previousLowestBid;
+
+		const existingBidIndex = order.Bids.findIndex(
+			(bid) => bid.shipperId === shipperId
+		);
+
+		if (existingBidIndex !== -1) {
+			order.Bids[existingBidIndex].amount = amount;
+			order.Bids[existingBidIndex].createdAt = new Date();
+		} else {
+			order.Bids.push({
+				shipperId,
+				shipperName,
+				amount,
+				createdAt: new Date(),
+			});
+		}
 
 		await order.save();
+
+		order.Bids.sort((a, b) => a.amount - b.amount);
+
+		if (isOutbidding) {
+			const outbidShippers = order.Bids.filter(
+				(bid) => bid.amount > amount && bid.shipperId !== shipperId
+			);
+
+			for (const bid of outbidShippers) {
+				const outbidShipper = await ShipperData.findOne({
+					userId: bid.shipperId,
+				});
+				if (outbidShipper && outbidShipper.email) {
+					const subject = 'You Have Been Outbid';
+					const text = `Dear ${outbidShipper.fullname},\n\nAnother shipper has placed a lower bid on order ${orderId}.\n\nYou can choose to place a new bid if you're still interested.\n\nThank you,\nShipIt Team`;
+					sendEmail(outbidShipper.email, subject, text);
+				}
+			}
+		}
+
+		const customer = await LoginData.findOne({ userId: order.userId });
+		if (customer && customer.email) {
+			const subject = `New bid on your order ${orderId}`;
+			const text = `Dear ${customer.firstname},\n\nShipper ${shipperName} has placed a bid of ₹${amount} on your order.\n\nThank you,\nShipIt Team`;
+			sendEmail(customer.email, subject, text);
+		}
 
 		res.json({ success: true });
 	} catch (error) {
@@ -444,6 +503,10 @@ app.post('/SignUp', async (req, res, next) => {
 			userId: await generateID(),
 			address: Address ? Address : 'N/A',
 		});
+
+		const subject = 'Welcome to ShipIt!';
+		const message = `Dear ${Firstname},\n\nThank you for signing up with ShipIt. We're excited to have you onboard.\n\nBest regards,\nShipIt Team`;
+		sendEmail(Email, subject, message);
 
 		req.session.user = logindata;
 		res.redirect('/afterlogin');
@@ -879,6 +942,11 @@ app.post('/shipperRegistration', async (req, res) => {
 		});
 
 		req.session.user = shipperData;
+
+		const subject = 'Welcome to ShipIt!';
+		const message = `Dear ${Fullname},\n\nThank you for registering as a shipper with ShipIt. We look forward to partnering with you.\n\nBest regards,\nShipIt Team`;
+		sendEmail(Email, subject, message);
+
 		res.redirect('/dashboard');
 	} catch (error) {
 		if (error.message && error.message.includes('BAD_REQUEST')) {
@@ -964,6 +1032,15 @@ app.post(
 				deliveryDate: new Date(DeliveryDate),
 			});
 
+			const userId = req.session.user.userId;
+			const user = await LoginData.findOne({ userId: userId });
+
+			if (user && user.email) {
+				const subject = 'Shipment Request Submitted';
+				const text = `Dear ${user.firstname},\n\nYour shipment request has been successfully submitted. We will notify you when shippers place bids on your shipment.\n\nThank you,\nShipIt Team`;
+				sendEmail(user.email, subject, text);
+			}
+
 			res.redirect('/afterlogin');
 		} catch (error) {
 			console.error('Error submitting shipment:', error);
@@ -991,41 +1068,31 @@ app.post('/submitReview', isLoggedInAsuser, async (req, res) => {
 		!communicationRating ||
 		!review
 	) {
-		return res.json({ success: false, error: 'Missing required fields' });
+		return sendAlert(
+			res,
+			'All fields are required to submit a review.',
+			'/deliverycomplete'
+		);
 	}
 
 	try {
-		// Check if the review for this order by this user already exists
-		const existingReview = await ReviewData.findOne({
-			orderId: { $eq: orderId },
-			userId: { $eq: userId },
-		});
+		const existingReview = await ReviewData.findOne({ orderId: orderId });
 		if (existingReview) {
-			return res.json({
-				success: false,
-				error: 'You have already reviewed this order.',
-			});
+			return sendAlert(
+				res,
+				'You have already submitted a review for this order.',
+				'/deliverycomplete'
+			);
 		}
-
-		// Get the order details to verify the shipperId
-		const order = await orderData.findById({ _id: { $eq: orderId } });
+		const order = await orderData.findOne({ _id: orderId });
 		if (!order) {
-			return res.json({ success: false, error: 'Order not found' });
+			return sendAlert(res, 'Order not found.', '/deliverycomplete');
 		}
 
-		const shipperId = order.acceptedShipperId;
-		if (!shipperId) {
-			return res.json({
-				success: false,
-				error: 'Order has no assigned shipper',
-			});
-		}
-
-		// Create a new review
-		const newReview = new ReviewData({
+		const newReview = await ReviewData.create({
 			orderId,
-			shipperId,
 			userId,
+			shipperId: order.acceptedShipperId,
 			overallRating,
 			punctualityRating,
 			professionalismRating,
@@ -1033,51 +1100,27 @@ app.post('/submitReview', isLoggedInAsuser, async (req, res) => {
 			review,
 		});
 
-		await newReview.save();
+		const shipper = await ShipperData.findOne({
+			userId: order.acceptedShipperId,
+		});
+		if (shipper && shipper.email) {
+			const subject = 'You Have Received a New Review';
+			const text = `Dear ${shipper.fullname},\n\nYou have received a new review from a customer.\n\nReview Details:\nOverall Rating: ${overallRating}\nReview: ${review}\n\nThank you,\nShipIt Team`;
+			sendEmail(shipper.email, subject, text);
+		}
 
-		const reviews = await ReviewData.find({ shipperId });
-
-		const totalOverallRating = reviews.reduce(
-			(sum, r) => sum + r.overallRating,
-			0
+		return sendAlert(
+			res,
+			'Your review has been submitted successfully.',
+			'/afterlogin'
 		);
-		const totalPunctualityRating = reviews.reduce(
-			(sum, r) => sum + r.punctualityRating,
-			0
-		);
-		const totalProfessionalismRating = reviews.reduce(
-			(sum, r) => sum + r.professionalismRating,
-			0
-		);
-		const totalCommunicationRating = reviews.reduce(
-			(sum, r) => sum + r.communicationRating,
-			0
-		);
-
-		const reviewCount = reviews.length;
-
-		const averageOverallRating = totalOverallRating / reviewCount;
-		const averagePunctualityRating = totalPunctualityRating / reviewCount;
-		const averageProfessionalismRating =
-			totalProfessionalismRating / reviewCount;
-		const averageCommunicationRating = totalCommunicationRating / reviewCount;
-
-		// Update shipper data
-		await ShipperData.updateOne(
-			{ userId: shipperId },
-			{
-				shipperRating: averageOverallRating,
-				punctualityRating: averagePunctualityRating,
-				professionalismRating: averageProfessionalismRating,
-				communicationRating: averageCommunicationRating,
-				shipperRatingCount: reviewCount,
-			}
-		);
-
-		res.json({ success: true });
 	} catch (error) {
 		console.error('Error submitting review:', error);
-		res.json({ success: false, error: 'Internal server error' });
+		return sendAlert(
+			res,
+			'An error occurred while submitting your review.',
+			'/deliverycomplete'
+		);
 	}
 });
 
@@ -1105,6 +1148,11 @@ app.post('/contact', async (req, res) => {
 			subject: Subject,
 			text: Textbox,
 		});
+
+		const subjectLine = 'Your message has been received';
+		const message = `Dear ${Name},\n\nThank you for reaching out to us. We have received your message and will respond shortly.\n\nRegards,\nShipIt Team`;
+		sendEmail(Email, subjectLine, message);
+
 		return sendAlert(res, 'Message sent successfully', '/contact');
 	} catch (error) {
 		console.error('Error sending message:', error);
@@ -1147,6 +1195,14 @@ app.post('/acceptBid', async (req, res) => {
 		order.acceptedShipperId = shipperId;
 		order.acceptedBidAmount = amount; // Store accepted bid amount
 		await order.save();
+
+		const shipper = await ShipperData.findOne({ userId: shipperId });
+		if (shipper && shipper.email) {
+			const subject = `Your bid has been accepted for order ${orderId}`;
+			const text = `Dear ${shipper.fullname},\n\nYour bid of ₹${amount} on order ${orderId} has been accepted.\n\nThank you,\nShipIt Team`;
+			sendEmail(shipper.email, subject, text);
+		}
+
 		res.json({ success: true });
 	} catch (error) {
 		console.error('Error accepting bid:', error);
