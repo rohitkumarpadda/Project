@@ -1,62 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Customer-LOGIN</title>
-    <link rel="stylesheet" href="/css/customerlogin.css" />
-  </head>
-  <body>
-    <div id="formdiv">
-      <form action="/SignIn" method="post">
-        <div id="select">
-          <button id="customer" class="selectuser">
-            <a
-              href="customerlogin.html"
-              style="text-decoration: none; color: black"
-              >Customer</a
-            >
-          </button>
-          <button id="retailer" class="selectuser">
-            <a
-              href="retailerlogin.html"
-              style="text-decoration: none; color: black"
-              >Retailer</a
-            >
-          </button>
-        </div>
-        <h2 id="loginheading">Login</h2>
-        <p>Enter your email and password for logging in</p>
-        <div class="input">
-          <label for="box1">Email</label>
-          <br />
-          <input
-            type="email"
-            id="box1"
-            name="Email"
-            placeholder="  name@example.com"
-          />
-        </div>
-        <br />
-        <div class="input">
-          <label for="box2">Password</label>
-          <a href="/forgot-Password" id="link">forgetpassword</a>
-          <br />
-          <input type="password" id="box2" name="Password" />
-        </div>
-        <div class="input">
-          <button id="loginbutton">Login</button>
-        </div>
-        <div class="oauth-buttons">
-          <a href="/auth/google" class="oauth-btn google">Login with Google</a>
-        </div>
-        <br />
-        <br />
-        <div id="footer">
-          <p>Don't have an account?</p>
-          <a href="/SignUp">Sign up</a>
-        </div>
-      </form>
-    </div>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Customer-LOGIN</title>
+		<link rel="stylesheet" href="/css/customerlogin.css" />
+	</head>
+	<body>
+		<div id="formdiv">
+			<form action="/SignIn" method="post">
+				<div id="select">
+					<button id="customer" class="selectuser">
+						<a
+							href="customerlogin.html"
+							style="text-decoration: none; color: black"
+							>Customer</a
+						>
+					</button>
+					<button id="retailer" class="selectuser">
+						<a
+							href="retailerlogin.html"
+							style="text-decoration: none; color: black"
+							>Retailer</a
+						>
+					</button>
+				</div>
+				<h2 id="loginheading">Login</h2>
+				<p>Enter your email and password for logging in</p>
+				<div class="input">
+					<label for="box1">Email</label>
+					<br />
+					<input
+						type="email"
+						id="box1"
+						name="Email"
+						placeholder="  name@example.com"
+					/>
+				</div>
+				<br />
+				<div class="input">
+					<label for="box2">Password</label>
+					<a href="/forgot-Password" id="link">forgetpassword</a>
+					<br />
+					<input type="password" id="box2" name="Password" />
+				</div>
+				<div class="input">
+					<button id="loginbutton">Login</button>
+				</div>
+				<div class="oauth-buttons">
+					<a href="/auth/google" class="oauth-btn google">Login with Google</a>
+				</div>
+				<br />
+				<br />
+				<div id="footer">
+					<p>Don't have an account?</p>
+					<a href="/SignUp">Sign up</a>
+				</div>
+			</form>
+		</div>
+	</body>
 </html>

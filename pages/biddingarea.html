@@ -13,7 +13,7 @@
 			<div id="heading" class="start">ShipIt</div>
 			<div id="right">
 				<button id="modebtn"><img src="assets/moon.svg" class="mode" /></button>
-                <a href="/logout"><img src="assets/log-out.svg" class="mode"></a>
+				<a href="/logout"><img src="assets/log-out.svg" class="mode" /></a>
 			</div>
 		</div>
 		<h1>Bidding Area - Shipment #<span id="shipmentNumber"></span></h1>
@@ -56,22 +56,22 @@
 					<!-- Images will be dynamically inserted here -->
 				</div>
 			</div>
-        <div id="sidefllexdiv">
-			<div class="sideflex">
-				<h2 class="mainheading">Bidding Information</h2>
-				<div class="sideflexitem">
-				  <p>Current Best Price:</p>
-				  <h4 id="bestBid">₹0</h4>
+			<div id="sidefllexdiv">
+				<div class="sideflex">
+					<h2 class="mainheading">Bidding Information</h2>
+					<div class="sideflexitem">
+						<p>Current Best Price:</p>
+						<h4 id="bestBid">₹0</h4>
+					</div>
+					<div class="sideflexitem">
+						<p>Time Left:</p>
+						<h4 id="timeLeft">-</h4>
+					</div>
+					<div class="sideflexitem">
+						<p>Number of Bidders:</p>
+						<h4 id="numberOfBidders">0</h4>
+					</div>
 				</div>
-				<div class="sideflexitem">
-				  <p>Time Left:</p>
-				  <h4 id="timeLeft">-</h4>
-				</div>
-				<div class="sideflexitem">
-				  <p>Number of Bidders:</p>
-				  <h4 id="numberOfBidders">0</h4>
-				</div>
-			  </div>
 				<div class="sideflex">
 					<h2 class="mainheading">Place Your Bid</h2>
 					<form id="bidForm">
@@ -92,7 +92,9 @@
 				</div>
 			</div>
 		</div>
-		<div id="footer"><p id="footerpara">&#169; ShipIt.All rights reserved</p></div>
+		<div id="footer">
+			<p id="footerpara">&#169; ShipIt.All rights reserved</p>
+		</div>
 		<script src="js/biddingarea.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {

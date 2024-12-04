@@ -1,266 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME</title>
-    <link rel="stylesheet" href="css/afterloginhome.css">
-     <link rel="icon"  href="assets/ship.svg">
-</head>
-<body>
-     <div class="header">
-        <img src="assets/ship2.svg" class="shipimg">
-        <div id="heading" class="start">ShipIt</div>
-        <div id="middle">
-        <div  class="start"><a href="" id="a1" class="starti">Home</a></div>
-        <div  class="start"><a href="" id="a3" class="starti">About Us</a></div> 
-        <div  class="start"><a href="" id="a4" class="starti">Contact</a></div>
-        <div  class="start"></div>
-        </div>
-        <div id="right">
-        <button id="modebtn"><img src="assets/moon.svg" class="mode" id="modebtn1"></button>
-        <button id="newmodebtn"><img src="assets/user.svg" class="mode" id="imgprofile"></button>
-        <a href="/logout"><img src="assets/log-out.svg" class="mode"></a>
-        <!-- log out route ivu -->
-        </div>
-     </div>
-        <!-- i need to render the div here -->
-     <div id="parent2">
-        <h1 id="parent2heading">Ship Smater,Not Harder</h1>
-        <p id="parent2para">ShipIt is the revolutionary platform that connects customers with shippers through an innovative bidding system. Save time and money on your shipments today!</p>
-        <div id="parent2btnbox">
-            <button class="parent2btn" id="parent2btn1" onclick="document.getElementById('section1').scrollIntoView()">Submit New Shipment</button>
-        </div>
-     </div>
-     <div id="parent3">
-        <h2 id="parent3mainheading">Your shipments</h2>
-        <div id="parent3btns">
-            <button class="parent3btn" id="parent31">Current Shipments</button>
-            <button class="parent3btn" id="parent32">Past Shipments</button>
-        </div>
-        <section id="currentshippmentssection">
-        <div id="parent3contents">
-           <!-- fetch elements-->
-           <script>
-            const parent3contents=document.getElementById('parent3contents');
-            document.addEventListener('DOMContentLoaded',()=>{
-                fetch("/showOrders").then((response)=>response.json()).then((data)=>{
-                    console.log(data);
-                    if(data.length===0){
-                        parent3contents.innerHTML="<h2>No Orders</h2>";
-                    }else{
-                    displayOrders(data); 
-                }
-                });
-        
-                function displayOrders(data){
-                    data.forEach((order,index)=>{
-                        if(order.status==="In Auction" || order.status==="In Transit"){
-                        const div=document.createElement('div');
-                        div.classList.add('shippment');
-                        div.innerHTML=`
-                        <div class="headingimgp3" onClick="window.location.href='/orderStatus?orderId=${order._id}'">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>HOME</title>
+		<link rel="stylesheet" href="css/afterloginhome.css" />
+		<link rel="icon" href="assets/ship.svg" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="assets/ship2.svg" class="shipimg" />
+			<div id="heading" class="start">ShipIt</div>
+			<div id="middle">
+				<div class="start"><a href="" id="a1" class="starti">Home</a></div>
+				<div class="start"><a href="" id="a3" class="starti">About Us</a></div>
+				<div class="start"><a href="" id="a4" class="starti">Contact</a></div>
+				<div class="start"></div>
+			</div>
+			<div id="right">
+				<button id="modebtn">
+					<img src="assets/moon.svg" class="mode" id="modebtn1" />
+				</button>
+				<button id="newmodebtn">
+					<img src="assets/user.svg" class="mode" id="imgprofile" />
+				</button>
+				<a href="/logout"><img src="assets/log-out.svg" class="mode" /></a>
+				<!-- log out route ivu -->
+			</div>
+		</div>
+		<!-- i need to render the div here -->
+		<div id="parent2">
+			<h1 id="parent2heading">Ship Smater,Not Harder</h1>
+			<p id="parent2para">
+				ShipIt is the revolutionary platform that connects customers with
+				shippers through an innovative bidding system. Save time and money on
+				your shipments today!
+			</p>
+			<div id="parent2btnbox">
+				<button
+					class="parent2btn"
+					id="parent2btn1"
+					onclick="document.getElementById('section1').scrollIntoView()"
+				>
+					Submit New Shipment
+				</button>
+			</div>
+		</div>
+		<div id="parent3">
+			<h2 id="parent3mainheading">Your shipments</h2>
+			<div id="parent3btns">
+				<button class="parent3btn" id="parent31">Current Shipments</button>
+				<button class="parent3btn" id="parent32">Past Shipments</button>
+			</div>
+			<section id="currentshippmentssection">
+				<div id="parent3contents">
+					<!-- fetch elements-->
+					<script>
+						const parent3contents = document.getElementById('parent3contents');
+						document.addEventListener('DOMContentLoaded', () => {
+							fetch('/showOrders')
+								.then((response) => response.json())
+								.then((data) => {
+									console.log(data);
+									if (data.length === 0) {
+										parent3contents.innerHTML = '<h2>No Orders</h2>';
+									} else {
+										displayOrders(data);
+									}
+								});
+
+							function displayOrders(data) {
+								data.forEach((order, index) => {
+									if (
+										order.status === 'In Auction' ||
+										order.status === 'In Transit'
+									) {
+										const div = document.createElement('div');
+										div.classList.add('shippment');
+										div.innerHTML = `
+                        <div class="headingimgp3" onClick="window.location.href='/orderStatus?orderId=${
+													order._id
+												}'">
                             <img src="assets/package (1).svg">
-                            <h3 class="shippmentheading">Shipment#${index+1}</h3>
+                            <h3 class="shippmentheading">Shipment#${
+															index + 1
+														}</h3>
                             </div>
-                            <p class="shippmentdicrip">Bids:${order.Bids.length}</p>
-                            <p class="shippmentdicrip">Status:${order.status}</p>
-                            <p class="shippmentdicrip">Time Left:2 days</p>`
-                        parent3contents.appendChild(div);
-                }}); 
-                }
-            });
-        </script>
-        </div>
-        </section>
-        <section id="pastshippmentssection">
-            <div id="parent3contentsP">
-            <script>
-                const parent3contentsP=document.getElementById('parent3contentsP');
-                document.addEventListener('DOMContentLoaded',()=>{
-                    fetch("/showOrders").then((response)=>response.json()).then((data)=>{
-                        console.log(data);
-                        if(data.length===0){
-                            parent3contentsP.innerHTML="<h2>No Orders</h2>";
-                        }else{
-                        displayOrders(data); 
-                    }
-                    });
-            
-                    function displayOrders(data){
-                        let a=0;
-                        data.forEach((order,index)=>{
-                            if(order.status==="Delivered"){
-                                a++;
-                            const div=document.createElement('div');
-                            div.classList.add('shippment');
-                            div.innerHTML=`
-                            <div class="headingimgp3" onClick="window.location.href='/completed?orderId=${order._id}'" >
+                            <p class="shippmentdicrip">Bids:${
+															order.Bids.length
+														}</p>
+                            <p class="shippmentdicrip">Status:${
+															order.status
+														}</p>
+                            <p class="shippmentdicrip">Time Left:2 days</p>`;
+										parent3contents.appendChild(div);
+									}
+								});
+							}
+						});
+					</script>
+				</div>
+			</section>
+			<section id="pastshippmentssection">
+				<div id="parent3contentsP">
+					<script>
+						const parent3contentsP =
+							document.getElementById('parent3contentsP');
+						document.addEventListener('DOMContentLoaded', () => {
+							fetch('/showOrders')
+								.then((response) => response.json())
+								.then((data) => {
+									console.log(data);
+									if (data.length === 0) {
+										parent3contentsP.innerHTML = '<h2>No Orders</h2>';
+									} else {
+										displayOrders(data);
+									}
+								});
+
+							function displayOrders(data) {
+								let a = 0;
+								data.forEach((order, index) => {
+									if (order.status === 'Delivered') {
+										a++;
+										const div = document.createElement('div');
+										div.classList.add('shippment');
+										div.innerHTML = `
+                            <div class="headingimgp3" onClick="window.location.href='/completed?orderId=${
+															order._id
+														}'" >
                                 <img src="assets/package (1).svg">
-                                <h3 class="shippmentheading">Shipment#${index+1}</h3>
+                                <h3 class="shippmentheading">Shipment#${
+																	index + 1
+																}</h3>
                                 </div>
-                                <p class="shippmentdicrip">Bids:${order.Bids.length}</p>
-                                <p class="shippmentdicrip">Status:${order.status}</p>
-                                <p class="shippmentdicrip">Time Left:2 days</p>`
-                            parent3contentsP.appendChild(div);
-                    }}
-                    
-                ); if(a===0){
-                    parent3contentsP.innerHTML="<h2>No Past Orders</h2>";
-                }
-                    }
-                });
-            </script>
-            </div>
-        </section>
-     </div>
-     <section id="section1">
-        <form id="form" action="/submit-shipment" method="post" enctype="multipart/form-data">
-            <h2 id="formheading">Submit Your Shipment</h2>
-            <div class="set">
-                <div class="formele">
-                     <label for="length">Length</label>
-                <br>
-                <input type="text" name="Length" placeholder="Enter Length (in cm)" id="length">
-                </div>
-                 <div class="formele">
-                <label for="width">Width</label>
-                <br>
-                 <input type="text" name="Width" placeholder="Enter Width (in cm)" id="width">
-                 </div>
-            </div>
-            <div class="set">
-                 <div class="formele">
-                <label for="height">Height</label>
-                <br>
-                 <input type="text" name="Height" placeholder="Enter height (in cm)" id="height">
-                 </div>
-                 <div class="formele">
-                 <label for="weight">Weight</label>
-                 <br>
-                 <input type="text" name="Weight" placeholder="Enter weight (in kg)" id="weight">
-                 </div>
-            </div>
-            <h2 class="addressheading">From Address</h2>
-            <div class="addressuser">
-                 <div class="set">
-                 <div class="formele">
-                 <label for="housenumber">House Number</label>
-                 <br>
-                 <input type="text" id="housenumber" name="HouseNumber" placeholder="H.NO" required>
-                 </div>
-                 <div class="formele">
-                    <label for="colony">Colony</label>
-                    <br>
-                 <input type="text" id="colony" name="Colony" placeholder="colony" required>
-                 </div>
-                 
-            </div>
-             <div class="set">
-                 <div class="formele">
-                  <label for="pincode">Pin-Code</label>
-                  <br>
-                  <input type="number" id="pincode" name="PinCode" placeholder="Pin-Code" required lenght="6">
-                 </div>
-                 <div class="formele">
-                    <label for="city">City</label>
-                    <br>
-                     <input type="text"  id="city" name="City" placeholder="City/District" required>
-                 </div>
-            </div>
-            <div class="set">
-                 <div class="formele">
-                    <label for="state">State</label>
-                    <br>
-                   <input type="text" id="state" name="State" placeholder="State" required>
-                 </div>
-            </div>
-            </div>
-            <h2 class="addressheading">To Address</h2>
-            <div class="addressuser">
-             <div class="set">
-                 <div class="formele">
-                 <label for="housenumber">House Number</label>
-                 <br>
-                 <input type="text" id="housenumberTo" name="HousenumberTo" placeholder="H.NO" required>
-                 </div>
-                 <div class="formele">
-                    <label for="colony">Colony</label>
-                    <br>
-                 <input type="text" id="colonyTo" name="ColonyTo" placeholder="colony" required>
-                 </div>
-                 
-            </div>
-             <div class="set">
-                 <div class="formele">
-                  <label for="pincode">Pin-Code</label>
-                  <br>
-                  <input type="number" id="pincodeTo" name="PinCodeTo" placeholder="Pin-Code" required lenght="6">
-                 </div>
-                 <div class="formele">
-                    <label for="city">City</label>
-                    <br>
-                     <input type="text"  id="cityTo" name="CityTo" placeholder="City/District" required>
-                 </div>
-            </div>
-            <div class="set">
-                 <div class="formele">
-                    <label for="state">State</label>
-                    <br>
-                   <input type="text" id="stateto" name="StateTo" placeholder="State" required>
-                 </div>
-            </div>
-            </div>
-            <div class="set">
-                <div class="formele">
-                     <label for="pickupDate">PickupDate</label>
-                <br>
-                <input type="date" name="PickupDate" placeholder="" id="pickupDate" required>
-                </div>
-                 <div class="formele">
-                <label for="DeliveryDate">Delivery Date</label>
-                <br>
-                 <input type="date" name="DeliveryDate" placeholder="" id="width" required>
-                 </div>
-            </div>
-            <input type="text" name="Description" placeholder="Description" id="formdescription">
-            <label for="forming">Photos</label>
-            <input type="file" name="Images" placeholder="Upload photos here" id="formimg"  src="assets/camera.svg">
-            <div id="caution">
-                <div class="cautionitems">
-                <img src="assets/circle-alert.svg">
-                <h3 id="cautionheading">Prohibited Items</h3>
-                </div>
+                                <p class="shippmentdicrip">Bids:${
+																	order.Bids.length
+																}</p>
+                                <p class="shippmentdicrip">Status:${
+																	order.status
+																}</p>
+                                <p class="shippmentdicrip">Time Left:2 days</p>`;
+										parent3contentsP.appendChild(div);
+									}
+								});
+								if (a === 0) {
+									parent3contentsP.innerHTML = '<h2>No Past Orders</h2>';
+								}
+							}
+						});
+					</script>
+				</div>
+			</section>
+		</div>
+		<section id="section1">
+			<form
+				id="form"
+				action="/submit-shipment"
+				method="post"
+				enctype="multipart/form-data"
+			>
+				<h2 id="formheading">Submit Your Shipment</h2>
+				<div class="set">
+					<div class="formele">
+						<label for="length">Length</label>
+						<br />
+						<input
+							type="text"
+							name="Length"
+							placeholder="Enter Length (in cm)"
+							id="length"
+						/>
+					</div>
+					<div class="formele">
+						<label for="width">Width</label>
+						<br />
+						<input
+							type="text"
+							name="Width"
+							placeholder="Enter Width (in cm)"
+							id="width"
+						/>
+					</div>
+				</div>
+				<div class="set">
+					<div class="formele">
+						<label for="height">Height</label>
+						<br />
+						<input
+							type="text"
+							name="Height"
+							placeholder="Enter height (in cm)"
+							id="height"
+						/>
+					</div>
+					<div class="formele">
+						<label for="weight">Weight</label>
+						<br />
+						<input
+							type="text"
+							name="Weight"
+							placeholder="Enter weight (in kg)"
+							id="weight"
+						/>
+					</div>
+				</div>
+				<h2 class="addressheading">From Address</h2>
+				<div class="addressuser">
+					<div class="set">
+						<div class="formele">
+							<label for="housenumber">House Number</label>
+							<br />
+							<input
+								type="text"
+								id="housenumber"
+								name="HouseNumber"
+								placeholder="H.NO"
+								required
+							/>
+						</div>
+						<div class="formele">
+							<label for="colony">Colony</label>
+							<br />
+							<input
+								type="text"
+								id="colony"
+								name="Colony"
+								placeholder="colony"
+								required
+							/>
+						</div>
+					</div>
+					<div class="set">
+						<div class="formele">
+							<label for="pincode">Pin-Code</label>
+							<br />
+							<input
+								type="number"
+								id="pincode"
+								name="PinCode"
+								placeholder="Pin-Code"
+								required
+								lenght="6"
+							/>
+						</div>
+						<div class="formele">
+							<label for="city">City</label>
+							<br />
+							<input
+								type="text"
+								id="city"
+								name="City"
+								placeholder="City/District"
+								required
+							/>
+						</div>
+					</div>
+					<div class="set">
+						<div class="formele">
+							<label for="state">State</label>
+							<br />
+							<input
+								type="text"
+								id="state"
+								name="State"
+								placeholder="State"
+								required
+							/>
+						</div>
+					</div>
+				</div>
+				<h2 class="addressheading">To Address</h2>
+				<div class="addressuser">
+					<div class="set">
+						<div class="formele">
+							<label for="housenumber">House Number</label>
+							<br />
+							<input
+								type="text"
+								id="housenumberTo"
+								name="HousenumberTo"
+								placeholder="H.NO"
+								required
+							/>
+						</div>
+						<div class="formele">
+							<label for="colony">Colony</label>
+							<br />
+							<input
+								type="text"
+								id="colonyTo"
+								name="ColonyTo"
+								placeholder="colony"
+								required
+							/>
+						</div>
+					</div>
+					<div class="set">
+						<div class="formele">
+							<label for="pincode">Pin-Code</label>
+							<br />
+							<input
+								type="number"
+								id="pincodeTo"
+								name="PinCodeTo"
+								placeholder="Pin-Code"
+								required
+								lenght="6"
+							/>
+						</div>
+						<div class="formele">
+							<label for="city">City</label>
+							<br />
+							<input
+								type="text"
+								id="cityTo"
+								name="CityTo"
+								placeholder="City/District"
+								required
+							/>
+						</div>
+					</div>
+					<div class="set">
+						<div class="formele">
+							<label for="state">State</label>
+							<br />
+							<input
+								type="text"
+								id="stateto"
+								name="StateTo"
+								placeholder="State"
+								required
+							/>
+						</div>
+					</div>
+				</div>
+				<div class="set">
+					<div class="formele">
+						<label for="pickupDate">PickupDate</label>
+						<br />
+						<input
+							type="date"
+							name="PickupDate"
+							placeholder=""
+							id="pickupDate"
+							required
+						/>
+					</div>
+					<div class="formele">
+						<label for="DeliveryDate">Delivery Date</label>
+						<br />
+						<input
+							type="date"
+							name="DeliveryDate"
+							placeholder=""
+							id="width"
+							required
+						/>
+					</div>
+				</div>
+				<input
+					type="text"
+					name="Description"
+					placeholder="Description"
+					id="formdescription"
+				/>
+				<label for="forming">Photos</label>
+				<input
+					type="file"
+					name="Images"
+					placeholder="Upload photos here"
+					id="formimg"
+					src="assets/camera.svg"
+				/>
+				<div id="caution">
+					<div class="cautionitems">
+						<img src="assets/circle-alert.svg" />
+						<h3 id="cautionheading">Prohibited Items</h3>
+					</div>
 
-                <p id="cautionpara">For safety and legal reasons, the following items are strictly prohibited:</p>
+					<p id="cautionpara">
+						For safety and legal reasons, the following items are strictly
+						prohibited:
+					</p>
 
-                <div id="cautionobj">
-                <div class="cautionitems">
-                    <img src="assets/bomb.svg">
-                  <p class="cautionpara"> Explosives</p> 
-                </div>
-                 <div class="cautionitems">
-                    <img src="assets/biohazard.svg">
-                   <p class="cautionpara">Radioactive materials</p> 
-                </div>
-                 <div class="cautionitems">
-                    <img src="assets/radiation.svg">
-                    <p class="cautionpara">Harzardous chemicals</p>
-                </div>
-                </div>
-            </div>
-            <button id="formsubmit">Submit Shipment</button>
-        </form>
-     </section>
-     <div id="newdiv">
-        <script>
-            document.addEventListener("DOMContentLoaded",()=>{
-                fetch('/showUserDetails').then((response)=>response.json()).then((data)=>{
-                    displayProfile(data);
-                })
-               const newdiv=document.getElementById('newdiv');
-                function displayProfile(data){
-                     newdiv.innerHTML=` <div id="body">
+					<div id="cautionobj">
+						<div class="cautionitems">
+							<img src="assets/bomb.svg" />
+							<p class="cautionpara">Explosives</p>
+						</div>
+						<div class="cautionitems">
+							<img src="assets/biohazard.svg" />
+							<p class="cautionpara">Radioactive materials</p>
+						</div>
+						<div class="cautionitems">
+							<img src="assets/radiation.svg" />
+							<p class="cautionpara">Harzardous chemicals</p>
+						</div>
+					</div>
+				</div>
+				<button id="formsubmit">Submit Shipment</button>
+			</form>
+		</section>
+		<div id="newdiv">
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					fetch('/showUserDetails')
+						.then((response) => response.json())
+						.then((data) => {
+							displayProfile(data);
+						});
+					const newdiv = document.getElementById('newdiv');
+					function displayProfile(data) {
+						newdiv.innerHTML = ` <div id="body">
             <h2 id="bodyheading">Profile</h2>
         <input type="image" id="profilephoto" name="Photo" placeholder="Upload img" src="assets/camera.svg">
          <div class="boxflex">
@@ -286,13 +438,14 @@
         <div class="boxflex">
         <div id="bio"></div>
         </div>
-        </div>`
-    }
-});
-        </script>
-        
-     </div>
-      <div id="footer"><p id="footerpara">&#169 ShipIt.All rights reserved</p></div>
-</body>
-<script src="js/afterloginhome.js"></script>
+        </div>`;
+					}
+				});
+			</script>
+		</div>
+		<div id="footer">
+			<p id="footerpara">&#169; ShipIt.All rights reserved</p>
+		</div>
+	</body>
+	<script src="js/afterloginhome.js"></script>
 </html>
