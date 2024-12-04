@@ -387,7 +387,7 @@ app.post('/placeBid', isLoggedInAsShipper, async (req, res) => {
 		return res.json({ success: false, message: 'Missing required fields' });
 	}
 	try {
-		const order = await orderData.findById(orderId);
+		const order = await orderData.findOne({ _id: { $eq: orderId } });
 		if (!order) {
 			return res.json({ success: false, message: 'Order not found' });
 		}
@@ -422,7 +422,7 @@ app.post('/SignUp', async (req, res, next) => {
 			Verifypassword,
 			Address,
 		} = req.body;
-		
+
 		if (!passwordsMatch(Password, Verifypassword)) {
 			return sendAlert(
 				res,
@@ -1132,7 +1132,7 @@ app.post('/acceptBid', async (req, res) => {
 			.json({ success: false, message: 'Missing required fields' });
 	}
 	try {
-		const order = await orderData.findById(orderId);
+		const order = await orderData.findOne({ _id: { $eq: orderId } });
 		if (!order) {
 			return res
 				.status(404)
@@ -1156,7 +1156,9 @@ app.get('/shipperDetailsProgress', async (req, res) => {
 		return res.status(400).json({ error: 'Shipper ID is required' });
 	}
 	try {
-		const shipper = await ShipperData.findOne({ userId: shipperId }).lean();
+		const shipper = await ShipperData.findOne({
+			userId: { $eq: shipperId },
+		}).lean();
 		if (!shipper) {
 			return res.status(404).json({ error: 'Shipper not found' });
 		}
@@ -1288,7 +1290,7 @@ app.get('/api/order/details', isLoggedInAsShipper, async (req, res) => {
 	}
 
 	try {
-		const order = await orderData.findById(orderId).lean();
+		const order = await orderData.findById({ _id: { $eq: orderId } }).lean();
 		if (!order) {
 			return res
 				.status(404)
@@ -1315,7 +1317,9 @@ app.get(
 		}
 
 		try {
-			const bankingDetails = await ShipperBank.findOne({ shipperId }).lean();
+			const bankingDetails = await ShipperBank.findOne({
+				shipperId: { $eq: shipperId },
+			}).lean();
 			if (!bankingDetails) {
 				return res
 					.status(404)
