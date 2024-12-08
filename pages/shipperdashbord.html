@@ -427,7 +427,9 @@
 				const payoutButtons = document.querySelectorAll('.viewPayoutBtn');
 				payoutButtons.forEach((button) => {
 					button.addEventListener('click', (e) => {
-						const orderId = e.target.getAttribute('data-order-id');
+						const orderId = encodeURIComponent(
+							e.target.getAttribute('data-order-id')
+						);
 						window.location.href = `/payout?orderId=${orderId}`;
 					});
 				});
